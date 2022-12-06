@@ -131,7 +131,7 @@ void createLinkedList(string file_name, int field_type, int data_type)
 					}
 					else
 						string_list.insert(word);
-					break;
+					break; 
 				}
 
 			}
