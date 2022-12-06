@@ -84,7 +84,7 @@ public:
 		return b;
 	}
 
-	AVL_Node<T>* Insert(int X, AVL_Node<T>* root) {
+	AVL_Node<T>* Insert(T X, AVL_Node<T>* root) {
 		if (root == NULL)	root = new AVL_Node<T>(X);
 
 		else if (X < root->key) {

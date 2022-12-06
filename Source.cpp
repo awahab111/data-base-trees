@@ -16,9 +16,9 @@ int check_datatype(string word) {
 
 int getFieldType(string file_name)
 {
-	fstream fin(file_name, ios:: in);
+	ifstream fin(file_name, ios:: in);
 	string line, word;
-	int field;
+	int field=0;
 	int disp_index = 0;
 	if (fin.is_open())
 	{
@@ -29,11 +29,11 @@ int getFieldType(string file_name)
 			cout << disp_index << ". " << word << endl;
 			disp_index++;
 		}
-
 		cout << "Choose field type : ";
 		cin >> field;
 	}
 	fin.close();
+
 	return field;
 }
 
@@ -49,9 +49,9 @@ void getCompleteWord(string& word, stringstream& str)
 
 int getDataType(string file_name, int field_type)
 {
-	fstream fin(file_name, ios::in);
+	ifstream fin(file_name, ios::in);
 	string line, word;
-	int data_type;
+	int data_type=0;
 	int disp_index = 0;
 	if (fin.is_open())
 	{
@@ -105,8 +105,7 @@ void show_data(string file_name, int field_type) {
 	fin.close();
 }
 
-template <class T>
-void createLinkedList(string file_name, int field_type, int data_type)
+void createLinkedList(string file_name, SLinkedList<string>&list, int field_type)
 {
 	SLinkedList<float> float_list;
 	SLinkedList<string> string_list;
@@ -124,13 +123,7 @@ void createLinkedList(string file_name, int field_type, int data_type)
 				if (word[0] == '"') getCompleteWord(word, str);
 				if (i == field_type)
 				{
-					if (data_type == 0)
-					{
-						float key = std::stof(word);
-						float_list.insert(key);
-					}
-					else
-						string_list.insert(word);
+					list.insert(word);
 					break; 
 				}
 
@@ -138,11 +131,36 @@ void createLinkedList(string file_name, int field_type, int data_type)
 		}
 
 	}
-	list.print();
+
 	fin.close();
 
 }
+AVL_Node<float>* makeAvlTree_float(SLinkedList<string> list)
+{
+	AVLTree<float> avl_tree;
+	Node<string>* snode = list.head;
+	float key;
+	while (snode != NULL)
+	{
+		key = stof(snode->data);
+		avl_tree.Insert(key, avl_tree.root);
+		snode = snode->next;
+	}
 
+	return avl_tree.root;
+
+}
+AVL_Node<string>* makeAvlTree_string(SLinkedList<string> list)
+{
+	AVLTree<string> avl_tree;
+	Node<string>* snode = list.head;
+	while (snode != NULL)
+	{
+		avl_tree.Insert(snode->data, avl_tree.root);
+		snode = snode->next;
+	}
+	return avl_tree.root;
+}
 void AVL_Tree_Indexing()
 {
 	string file_name = "data_1.csv";
@@ -151,22 +169,22 @@ void AVL_Tree_Indexing()
 	int data_type = getDataType(file_name, field_type);
 	//cout << "data_type: " << data_type << endl;
 	//show_data(file_name, field_type);
-
-	if (data_type == 0) //if data type is int/flaot
+	SLinkedList<string> list;
+	createLinkedList(file_name, list, field_type);
+	if (data_type == 0)
 	{
-		SLinkedList<float> list;
-		createLinkedList<float>(file_name, list, field_type, data_type);
+		AVLTree<float> tree;
+		tree.root = makeAvlTree_float(list);
+		tree.PostOrderTraversal(tree.root);
+	}
+	else {
+		AVLTree<string> tree;
+		tree.root = makeAvlTree_string(list);
+		tree.PostOrderTraversal(tree.root);
 
 	}
 
-	else 
-	{
-		SLinkedList<string> list;
-		createLinkedList<string>(file_name, list, field_type, data_type);
-	}
 
-
-	
 }
 
 

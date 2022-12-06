@@ -7,7 +7,6 @@ public:
 
 	Node()
 	{
-		data = 0;
 		next = NULL;
 	}
 
