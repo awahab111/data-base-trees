@@ -1,5 +1,6 @@
 
 #include "AVL_Tree.h"
+#include "SinglyLinkedList.h"
 #include <algorithm>
 #include <sstream>
 
@@ -104,14 +105,68 @@ void show_data(string file_name, int field_type) {
 	fin.close();
 }
 
+template <class T>
+void createLinkedList(string file_name, int field_type, int data_type)
+{
+	SLinkedList<float> float_list;
+	SLinkedList<string> string_list;
+	fstream fin(file_name, ios::in);
+	string line, word;
+	if (fin.is_open())
+	{
+		cout << "File has opened succesfully.\n";
+		getline(fin, line);
+		while (getline(fin, line)) {
+			stringstream str(line);
+			for (int i = 0; i <= field_type; i++)
+			{
+				getline(str, word, ',');
+				if (word[0] == '"') getCompleteWord(word, str);
+				if (i == field_type)
+				{
+					if (data_type == 0)
+					{
+						float key = std::stof(word);
+						float_list.insert(key);
+					}
+					else
+						string_list.insert(word);
+					break;
+				}
+
+			}
+		}
+
+	}
+	list.print();
+	fin.close();
+
+}
+
 void AVL_Tree_Indexing()
 {
 	string file_name = "data_1.csv";
 	int field_type = getFieldType(file_name);
-	cout << "field_type: " << field_type << endl;
+	//cout << "field_type: " << field_type << endl;
 	int data_type = getDataType(file_name, field_type);
-	cout << "data_type: " << data_type << endl;
-	show_data(file_name, field_type);
+	//cout << "data_type: " << data_type << endl;
+	//show_data(file_name, field_type);
+
+	if (data_type == 0) //if data type is int/flaot
+	{
+		SLinkedList<float> list;
+		createLinkedList<float>(file_name, list, field_type, data_type);
+
+	}
+
+	else 
+	{
+		SLinkedList<string> list;
+		createLinkedList<string>(file_name, list, field_type, data_type);
+	}
+
+
+	
 }
 
 
