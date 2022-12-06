@@ -1,35 +1,122 @@
 
 #include "AVL_Tree.h"
 #include <algorithm>
+#include <sstream>
 
 using namespace std;
 
+int check_datatype(string word) {
+	for (int  i = 0; i < word.size(); i++)
+	{
+		if ((word[i] >= 'a' && word[i] <= 'z') || (word[i] >= 'A' && word[i] <= 'Z')) return 1; // returns 1 if the value is a string 
+	}
+	return 0; // returns 0 if the value is float 
+}
+
+int getFieldType(string file_name)
+{
+	fstream fin(file_name, ios:: in);
+	string line, word;
+	int field;
+	int disp_index = 0;
+	if (fin.is_open())
+	{
+		cout << "File has opened succesfully.\n";
+		getline(fin, line);
+		stringstream str(line);
+		while (getline(str, word, ',')) {
+			cout << disp_index << ". " << word << endl;
+			disp_index++;
+		}
+
+		cout << "Choose field type : ";
+		cin >> field;
+	}
+	fin.close();
+	return field;
+}
+
+void getCompleteWord(string& word, stringstream& str)
+{
+	string temp;
+	getline(str, temp, '"');
+	word += temp;
+	str.get();// to skip the comma-
+	//str.get();// to skip the comma-
+
+}
+
+int getDataType(string file_name, int field_type)
+{
+	fstream fin(file_name, ios::in);
+	string line, word;
+	int data_type;
+	int disp_index = 0;
+	if (fin.is_open())
+	{
+		cout << "File has opened succesfully.\n";
+		getline(fin, line);
+		getline(fin, line);
+		stringstream str(line);
+		for (int i = 0; i <= field_type; i++)
+		{
+			getline(str, word, ',');
+			if (word[0] == '"') getCompleteWord(word, str);
+			if (i == field_type)
+			{
+				cout << "DATA: " << word << endl;
+				data_type = check_datatype(word);
+				break;
+			}
+
+		}
+	}
+	fin.close();
+	return data_type;
+}
 
 
+void show_data(string file_name, int field_type) {
+	fstream fin(file_name, ios::in);
+	string line, word;
+	int data_type;
+	int disp_index = 0;
+	if (fin.is_open())
+	{
+		cout << "File has opened succesfully.\n";
+		getline(fin, line);
+		while (getline(fin, line)) {
+			stringstream str(line);
+			for (int i = 0; i <= field_type; i++)
+			{
+				getline(str, word, ',');
+				if (word[0] == '"') getCompleteWord(word, str);
+				if (i == field_type)
+				{
+					cout << word << endl;
+					break;
+				}
 
+			}
+		}
+		
+	}
+	fin.close();
+}
+
+void AVL_Tree_Indexing()
+{
+	string file_name = "data_1.csv";
+	int field_type = getFieldType(file_name);
+	cout << "field_type: " << field_type << endl;
+	int data_type = getDataType(file_name, field_type);
+	cout << "data_type: " << data_type << endl;
+	show_data(file_name, field_type);
+}
 
 
 int main()
 {
-	AVLTree tree;
-	tree.Insert(9, tree.root);
-	tree.Insert(5, tree.root);
-	tree.Insert(10, tree.root);
-	tree.Insert(0, tree.root);
-	tree.Insert(6, tree.root);
-	tree.Insert(11, tree.root);
-	tree.Insert(-1, tree.root);
-	tree.Insert(1, tree.root);
-	tree.Insert(2, tree.root);
-	//tree.(tree.root);
-
-	tree.PreOrderTraversal(tree.root);
-	tree.root = tree.Delete(10, tree.root);
-	cout << endl;
-	tree.PreOrderTraversal(tree.root);
-
-//	tree.Remove(tree.root, 10);
-	//cout << endl;
-	//tree.LevelOrder(tree.root);
+	AVL_Tree_Indexing();
 
 }
