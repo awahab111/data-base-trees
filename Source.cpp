@@ -92,8 +92,7 @@ void show_data(string file_name, int field_type) {
 			{
 				getline(str, word, ',');
 				if (word[0] == '"') getCompleteWord(word, str);
-				if (i == field_type)
-				{
+				if (i == field_type){
 					cout << word << endl;
 					break;
 				}
@@ -138,7 +137,7 @@ void createLinkedList(string file_name, SLinkedList<string>&list, int field_type
 AVL_Node<float>* makeAvlTree_float(SLinkedList<string> list)
 {
 	AVLTree<float> avl_tree;
-	Node<string>* snode = list.head;
+	SNode<string>* snode = list.head;
 	float key;
 	while (snode != NULL)
 	{
@@ -153,7 +152,7 @@ AVL_Node<float>* makeAvlTree_float(SLinkedList<string> list)
 AVL_Node<string>* makeAvlTree_string(SLinkedList<string> list)
 {
 	AVLTree<string> avl_tree;
-	Node<string>* snode = list.head;
+	SNode<string>* snode = list.head;
 	while (snode != NULL)
 	{
 		avl_tree.Insert(snode->data, avl_tree.root);
@@ -161,9 +160,13 @@ AVL_Node<string>* makeAvlTree_string(SLinkedList<string> list)
 	}
 	return avl_tree.root;
 }
+
 void AVL_Tree_Indexing()
 {
 	string file_name = "data_1.csv";
+	AVLTree<float> tree_f;
+	AVLTree<string> tree_s;
+
 	int field_type = getFieldType(file_name);
 	//cout << "field_type: " << field_type << endl;
 	int data_type = getDataType(file_name, field_type);
@@ -173,23 +176,24 @@ void AVL_Tree_Indexing()
 	createLinkedList(file_name, list, field_type);
 	if (data_type == 0)
 	{
-		AVLTree<float> tree;
-		tree.root = makeAvlTree_float(list);
-		tree.PostOrderTraversal(tree.root);
+		tree_f.root = makeAvlTree_float(list);
 	}
 	else {
-		AVLTree<string> tree;
-		tree.root = makeAvlTree_string(list);
-		tree.PostOrderTraversal(tree.root);
-
+		tree_s.root = makeAvlTree_string(list);
 	}
-
+	//tree_f.print2D(tree_f.root, 1);
+	if (data_type == 0)
+	{
+		return tree_f.root;
+	}
+	else return tree_s.root;
 
 }
 
 
 int main()
 {
-	AVL_Tree_Indexing();
+	AVL_Node<auto> = AVL_Tree_Indexing();
+	
 
 }

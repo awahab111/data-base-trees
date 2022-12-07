@@ -21,10 +21,11 @@ class Queue
 public:
 	QNode<T>* front = nullptr;
 	QNode<T>* rear = nullptr;
-
+	int num_items;
 	Queue()
 	{
 		front = rear = nullptr;
+		num_items = 0;
 	}
 
 
@@ -66,11 +67,14 @@ void Queue<T>::enqueue(T data)
 	if (isEmpty())
 	{
 		front = rear = newNode;
+		num_items++;
 	}
 	else
 	{
 		rear->next = newNode;
 		rear = newNode;
+		num_items++;
+
 	}
 
 }
@@ -78,19 +82,13 @@ void Queue<T>::enqueue(T data)
 template <class T>
 T Queue<T>::dequeue()
 {
-	if (isEmpty())
-	{
-		return -1;
-	}
-	else
-	{
 		T tempData = front->data;
 		QNode<T>* temp = front;
 		front = front->next;
 		if (front == nullptr) rear = nullptr;
 		delete temp;
+		num_items--;
 		return tempData;
-	}
 }
 
 template <class T>

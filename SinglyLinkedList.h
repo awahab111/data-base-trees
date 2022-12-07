@@ -1,31 +1,31 @@
 template <class T>
-class Node
+class SNode
 {
 public:
 	T data;
-	Node* next;
+	SNode* next;
 
-	Node()
+	SNode()
 	{
 		next = NULL;
 	}
 
-	Node(T d, Node* n) : data(0), next(n)
+	SNode(T d, SNode* n) : data(0), next(n)
 	{}
 
-	Node(T d) : data(d), next(nullptr)
+	SNode(T d) : data(d), next(nullptr)
 	{}
 
 	void setData(T d)
 	{}
 
-	void setNext(Node* n)
+	void setNext(SNode* n)
 	{}
 
 	T getData()
 	{}
 
-	Node* getNext()
+	SNode* getNext()
 	{}
 
 };
@@ -37,7 +37,7 @@ class SLinkedList {
 
 public:
 
-	Node<T>* head;
+	SNode<T>* head;
 
 
 	SLinkedList()
@@ -68,7 +68,7 @@ public:
 template <class T>
 void SLinkedList<T>::insert(T num)
 {
-	Node<T>* newNode = new Node<T>(num);
+	SNode<T>* newNode = new SNode<T>(num);
 	if (head == nullptr)
 	{
 		head = newNode;
@@ -76,7 +76,7 @@ void SLinkedList<T>::insert(T num)
 	}
 	else
 	{
-		Node<T>* temp = head;
+		SNode<T>* temp = head;
 		while (temp->next)
 		{
 			temp = temp->next;
@@ -89,7 +89,7 @@ void SLinkedList<T>::insert(T num)
 template <class T>
 void SLinkedList<T>::insertAtHead(T num)
 {
-	Node<T>* newNode = new Node<T>(num);
+	SNode<T>* newNode = new SNode<T>(num);
 	if (head == nullptr)
 	{
 		head = newNode;
@@ -105,8 +105,8 @@ void SLinkedList<T>::insertAtHead(T num)
 template <class T>
 void SLinkedList<T>::InsertAtIndex(int value, int index)
 {
-	Node<T>* newNode = new Node<T>(value);
-	Node<T>* temp = head;
+	SNode<T>* newNode = new SNode<T>(value);
+	SNode<T>* temp = head;
 	while (index>0)
 	{
 		if(temp->next != nullptr)
@@ -120,7 +120,7 @@ void SLinkedList<T>::InsertAtIndex(int value, int index)
 template <class T>
 int SLinkedList<T>::search(T value)
 {
-	Node<T>* temp = head;
+	SNode<T>* temp = head;
 	int index = 0;
 	while (temp && temp->data != value)
 	{
@@ -133,7 +133,7 @@ int SLinkedList<T>::search(T value)
 template <class T>
 void SLinkedList<T>::update(T original, T replace)
 {
-	Node<T>* temp = head;
+	SNode<T>* temp = head;
 	while (temp->data != original)
 	{
 		temp = temp->next;
@@ -144,12 +144,12 @@ void SLinkedList<T>::update(T original, T replace)
 template <class T>
 void SLinkedList<T>::remove(T value)
 {
-	Node<T>* traverse = head;
+	SNode<T>* traverse = head;
 	while (traverse->next->data != value)
 	{
 		traverse = traverse->next;
 	}
-	Node<T>* temp = traverse->next;
+	SNode<T>* temp = traverse->next;
 	traverse->next = temp->next;
 	delete temp;
 	temp = nullptr;
@@ -159,7 +159,7 @@ void SLinkedList<T>::remove(T value)
 template <class T>
 void SLinkedList<T>::print()
 {
-	Node<T>* temp = head;
+	SNode<T>* temp = head;
 	while (temp)
 	{
 		cout << temp->data << " ";

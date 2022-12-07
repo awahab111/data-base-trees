@@ -198,12 +198,12 @@ public:
 
 	}
 
-	void LevelOrder(AVL_Node<T>* root)
+	/*void LevelOrder(AVL_Node<T>* root)
 	{
 		if (root == nullptr)return;
 		Queue<AVL_Node<T>> queue;
 		queue.enqueue(*root);
-		while (!queue.isEmpty())
+		while (queue.num_items < 1)
 		{
 			AVL_Node<T> temp = queue.dequeue();
 			cout << temp.key << " ";
@@ -211,7 +211,38 @@ public:
 			if (temp.left != nullptr) queue.enqueue(*temp.left);
 			if (temp.right != nullptr) queue.enqueue(*temp.right);
 		}
+	}*/
+	void LevelOrder(AVL_Node<T>* ptr) {
+		if (root == NULL) { return; }
+		Queue <AVL_Node<T>*> q1;
+		q1.enqueue(root);
+		q1.enqueue(NULL);
+		while (q1.num_items > 1)
+		{
+			AVL_Node<T>* node = q1.Front();
+			q1.dequeue();
+			if (node == NULL)
+			{
+				q1.enqueue(NULL);
+				cout << endl;
+			}
+			else {
+				if (node->left)
+				{
+					q1.enqueue(node->left);
+				}
+				if (node->right)
+				{
+					q1.enqueue(node->right);
+				}
+				cout << node->key << " ";
+			}
+
+
+
+		}
 	}
+
 
 	int getMin(AVL_Node<T>* root)
 	{
@@ -287,7 +318,39 @@ public:
 		return node;
 	}
 
-
+	// Copied plz change this
+	int SPACE = 5;
+	void print2D(AVL_Node<T>* r, int space) {
+		if (r == NULL) // Base case  1
+			return;
+		space += SPACE; // Increase distance between levels   2
+		print2D(r->right, space); // Process right child first 3 
+		cout << endl;
+		for (int i = SPACE; i < space; i++) // 5 
+			cout << " "; // 5.1  
+		cout << r->key << "\n"; // 6
+		print2D(r->left, space); // Process left child  7
+	}
+	AVL_Node<T>* Search(T d) {
+		AVL_Node<T>* node = root;
+		while (node != NULL)
+		{
+			if (node->key < d)
+			{
+				node = node->left;
+			}
+			else if (node->key > d)
+			{
+				node = node->right;
+			}
+			else if (node->key == d)
+			{
+				cout << "Found";
+				break;
+			}
+		}
+		return node;
+	}
 
 	//void Delete(int k, AVL_Node<T>*& root)
 	//{
