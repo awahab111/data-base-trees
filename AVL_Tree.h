@@ -84,13 +84,8 @@ public:
 		return b;
 	}
 
-	void Insert(T val, int data_type) {
-		float temp = 0;
-		if (data_type == 0) {
-			temp = stof(val);
-			Insert_(temp, root);
-		}
-		else Insert_(val, root);
+	void Insert(T val) {
+		Insert_(val, root);
 	}
 
 	AVL_Node<T>* Insert_(T X, AVL_Node<T>* root) {
