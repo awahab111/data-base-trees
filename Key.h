@@ -6,7 +6,7 @@ public:
 	T key_val;
 	int line_num;
 	string file_name;
-
-	Key() {}
-
+	Key() {
+		
+	}
 };

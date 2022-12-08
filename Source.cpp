@@ -1,14 +1,4 @@
-
-#include "AVL_Tree.h"
-#include "SinglyLinkedList.h"
 #include "DataBase.h"
-#include <algorithm>
-#include <sstream>
-#include <string>
-
-using namespace std;
-
-
 
 //AVL_Node<float>* makeAvlTree_float(SLinkedList<string> list)
 //{
