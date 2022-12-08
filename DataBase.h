@@ -1,10 +1,13 @@
 #pragma once
 #include "AVL_Tree.h"
 #include "SinglyLinkedList.h"
+#include "Key.h"
 #include <algorithm>
 #include <sstream>
 #include <string>
 #include <iostream>
+#include <fstream>
+
 using namespace std;
 class Database {
 public:
