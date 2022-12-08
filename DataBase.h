@@ -26,9 +26,12 @@ public:
 		for (int i = 0; i < num_of_files; i++) { file_name[i] = f1[i]; }
 		field_type = getFieldType();
 		data_type = getDataType();
+		cout << "Create Linked List" << endl;
 		createLinkedList();
-		insertion_list.print();
-		//makeAvlTree();
+		cout << "Linked List Made " << endl;
+		//insertion_list.print();
+		makeAvlTree();
+		avl_tree.print2D(avl_tree.root, 1);
 	}
 
 
@@ -51,7 +54,7 @@ public:
 		int disp_index = 0;
 		if (fin.is_open())
 		{
-			cout << "File has opened succesfully.\n";
+			//cout << "File has opened succesfully.\n";
 			getline(fin, line);
 			while (getline(fin, line)) {
 				stringstream str(line);
@@ -80,27 +83,23 @@ public:
 			int line_num = 1;
 			if (fin.is_open())
 			{
-				cout << "File has opened succesfully.\n";
 				getline(fin, line);
 				while (getline(fin, line)) {
 					stringstream str(line);
-					for (int i = 0; i <= field_type; i++)
+					for (int j = 0; j <= field_type; j++)
 					{
 						getline(str, word, ',');
 						if (word[0] == '"') getCompleteWord(word, str);
-						if (i == field_type){
+						if (j == field_type){
 							Key<string> data(word, line_num++, file_name[i]);
 							insertion_list.insert(data);
 							break;
 						}
-
 					}
 				}
-
 			}
 			fin.close();
 		}
-		
 	}
 
 	int getFieldType()
@@ -111,7 +110,7 @@ public:
 		int disp_index = 0;
 		if (fin.is_open())
 		{
-			cout << "File has opened succesfully.\n";
+			//cout << "File has opened succesfully.\n";
 			getline(fin, line);
 			stringstream str(line);
 			while (getline(str, word, ',')) {
@@ -135,7 +134,7 @@ public:
 		int disp_index = 0;
 		if (fin.is_open())
 		{
-			cout << "File has opened succesfully.\n";
+			//cout << "File has opened succesfully.\n";
 			getline(fin, line);
 			getline(fin, line);
 			stringstream str(line);
