@@ -84,11 +84,20 @@ public:
 		return b;
 	}
 
-	AVL_Node<T>* Insert(T X, AVL_Node<T>* root) {
+	void Insert(T val, int data_type) {
+		float temp = 0;
+		if (data_type == 0) {
+			temp = stof(val);
+			Insert_(temp, root);
+		}
+		else Insert_(val, root);
+	}
+
+	AVL_Node<T>* Insert_(T X, AVL_Node<T>* root) {
 		if (root == NULL)	root = new AVL_Node<T>(X);
 
 		else if (X < root->key) {
-			root->left = Insert(X, root->left);
+			root->left = Insert_(X, root->left);
 			if (Height(root->left) - Height(root->right) == 2)
 				if (X < root->left->key)
 					root = RRotation(root); // RR rotation
@@ -97,7 +106,7 @@ public:
 
 		}
 		else if (X > root->key) {
-			root->right = Insert(X, root->right);
+			root->right = Insert_(X, root->right);
 			if (Height(root->right) - Height(root->left) == 2)
 				if (X > root->right->key)
 					root = LRotation(root); // LL rotation
