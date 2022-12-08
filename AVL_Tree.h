@@ -7,13 +7,13 @@ template <class T>
 class AVL_Node
 {
 public:
-	T key;
+	T data;
 	int height = 0;
 	AVL_Node<T>* left = nullptr;
 	AVL_Node<T>* right = nullptr;
 
 	AVL_Node(T d){
-		key = d;
+		data = d;
 	}
 
 	int getHeight()
@@ -33,38 +33,6 @@ public:
 		root = NULL;
 	}
 
-	//functions
-	//void insert(int k)
-	//{
-	//	AVL_Node<T>* newNode = new AVL_Node(k);
-	//	if (!root)
-	//	{
-	//		root = newNode;
-	//	}
-	//	else
-	//	{
-	//		AVL_Node<T>* temp = root;
-	//		while (temp)
-	//		{
-	//			if (temp->left == nullptr && k < temp->key)
-	//			{
-	//				temp->left = newNode;
-	//				break;
-	//			}
-	//			if (temp->right == nullptr && k > temp->key)
-	//			{
-	//				temp->right = newNode;
-	//				break;
-	//			}
-	//			if (k > temp->key)
-	//				temp = temp->right;
-	//			else if (k < temp->key)
-	//				temp = temp->left;
-	//		}
-	//		
-	//		
-	//	}
-	//}
 
 	int Height(AVL_Node<T>* P)
 	{
@@ -91,19 +59,19 @@ public:
 	AVL_Node<T>* Insert_(T X, AVL_Node<T>* root) {
 		if (root == NULL)	root = new AVL_Node<T>(X);
 
-		else if (X < root->key) {
+		else if (X < root->data) {
 			root->left = Insert_(X, root->left);
 			if (Height(root->left) - Height(root->right) == 2)
-				if (X < root->left->key)
+				if (X < root->left->data)
 					root = RRotation(root); // RR rotation
 				else
 					root = RL_Rotation(root); // RL rotation
 
 		}
-		else if (X > root->key) {
+		else if (X > root->data) {
 			root->right = Insert_(X, root->right);
 			if (Height(root->right) - Height(root->left) == 2)
-				if (X > root->right->key)
+				if (X > root->right->data)
 					root = LRotation(root); // LL rotation
 				else
 					root = LR_Rotation(root); // LR rotation
@@ -159,10 +127,10 @@ public:
 			AVL_Node<T>* temp = root;
 			while (temp)
 			{
-				if (temp->key == k) return true;
-				if (k > temp->key)
+				if (temp->data == k) return true;
+				if (k > temp->data)
 					temp = temp->right;
-				else if (k < temp->key)
+				else if (k < temp->data)
 					temp = temp->left;
 			}
 		}
@@ -174,7 +142,7 @@ public:
 
 		if (node == nullptr)
 			return;
-		cout << node->key << " ";
+		cout << node->data << " ";
 		PreOrderTraversal(node->left);
 		PreOrderTraversal(node->right);
 
@@ -187,7 +155,7 @@ public:
 			return;
 		PostOrderTraversal(node->left);
 		PostOrderTraversal(node->right);
-		cout << node->key << " ";
+		cout << node->data << " ";
 
 	}
 
@@ -197,7 +165,7 @@ public:
 		if (node == nullptr)
 			return;
 		InOrderTraversal(node->left);
-		cout << node->key << " ";
+		cout << node->data << " ";
 		InOrderTraversal(node->right);
 
 	}
@@ -210,7 +178,7 @@ public:
 		while (queue.num_items < 1)
 		{
 			AVL_Node<T> temp = queue.dequeue();
-			cout << temp.key << " ";
+			cout << temp.data << " ";
 
 			if (temp.left != nullptr) queue.enqueue(*temp.left);
 			if (temp.right != nullptr) queue.enqueue(*temp.right);
@@ -239,7 +207,7 @@ public:
 				{
 					q1.enqueue(node->right);
 				}
-				cout << node->key << " ";
+				cout << node->data << " ";
 			}
 
 
@@ -256,7 +224,7 @@ public:
 		{
 			temp = temp->left;
 		}
-		return temp->key;
+		return temp->data;
 	}
 
 	AVL_Node<T>* getMinNode(AVL_Node<T>* root)
@@ -281,7 +249,7 @@ public:
 	AVL_Node<T>* Delete(int val, AVL_Node<T>* node) {
 		AVL_Node<T>* temp;
 		if (!node) return node;
-		else if (val == node->key) {
+		else if (val == node->data) {
 			if (!node->right) {
 				temp = node->left;
 				delete node;
@@ -295,12 +263,12 @@ public:
 			else {
 				temp = node->right;
 				int min = getMin(temp);
-				node->key = min;
+				node->data = min;
 				node->right = Delete(min, temp);
 			}
 		}
-		else if (val < node->key) { node->left = Delete(val, node->left); }
-		else if (val > node->key) { node->right = Delete(val, node->right); }
+		else if (val < node->data) { node->left = Delete(val, node->left); }
+		else if (val > node->data) { node->right = Delete(val, node->right); }
 		if (node == NULL) { return node; }
 		node->height = 1 + max(Height(node->left), Height(node->right));
 		int bf = balanceFactor(node);
@@ -332,22 +300,22 @@ public:
 		cout << endl;
 		for (int i = SPACE; i < space; i++) // 5 
 			cout << " "; // 5.1  
-		cout << r->key << "\n"; // 6
+		cout << r->data << "\n"; // 6
 		print2D(r->left, space); // Process left child  7
 	}
 	AVL_Node<T>* Search(T d) {
 		AVL_Node<T>* node = root;
 		while (node != NULL)
 		{
-			if (node->key < d)
+			if (node->data < d)
 			{
 				node = node->left;
 			}
-			else if (node->key > d)
+			else if (node->data > d)
 			{
 				node = node->right;
 			}
-			else if (node->key == d)
+			else if (node->data == d)
 			{
 				cout << "Found";
 				break;
@@ -359,7 +327,7 @@ public:
 	//void Delete(int k, AVL_Node<T>*& root)
 	//{
 	//	if (!root) return;
-	//	else if (k == root-> key)
+	//	else if (k == root-> data)
 	//	{
 	//		
 	//		 if (!root->left)//left is null
@@ -378,13 +346,13 @@ public:
 	//		{
 	//			AVL_Node<T>* temp = root->right;
 	//			int min = getMin(temp);
-	//			root->key = min;
+	//			root->data = min;
 	//			Delete(min, temp);
 	//		}
 	//	}
-	//	else if (k < root->key)
+	//	else if (k < root->data)
 	//		Delete(k, root->left);
-	//	else if (k > root->key)
+	//	else if (k > root->data)
 	//		Delete(k, root->right);
 	//}
 

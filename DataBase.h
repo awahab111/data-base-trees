@@ -13,23 +13,29 @@ class Database {
 public:
 	int data_type;
 	int field_type;
-	string file_name;
-	SLinkedList<string> insertion_list;
-	AVLTree<string> avl_tree;
+	string *file_name;
+	int num_of_files;
+	SLinkedList<Key<string>> insertion_list;
+	AVLTree<Key<string>> avl_tree;
 
 	Database() {}
 
-	Database(string f1) {
-		file_name = f1;
+	Database(string f1[], int files_count) {
+		num_of_files = files_count;
+		file_name = new string[num_of_files];
+		for (int i = 0; i < num_of_files; i++) { file_name[i] = f1[i]; }
 		field_type = getFieldType();
 		data_type = getDataType();
 		createLinkedList();
-		makeAvlTree();
+		insertion_list.print();
+		//makeAvlTree();
 	}
+
+
 
 	void makeAvlTree()
 	{
-		SNode<string>* snode = insertion_list.head;
+		SNode<Key<string>>* snode = insertion_list.head;
 		while (snode != NULL)
 		{
 			avl_tree.Insert(snode->data);
@@ -39,7 +45,7 @@ public:
 
 
 	void show_data() {
-		fstream fin(file_name, ios::in);
+		fstream fin(file_name[0], ios::in);
 		string line, word;
 		int data_type;
 		int disp_index = 0;
@@ -67,36 +73,39 @@ public:
 
 	void createLinkedList()
 	{
-		fstream fin(file_name, ios::in);
 		string line, word;
-		if (fin.is_open())
+		for (int i = 0; i < num_of_files; i++)
 		{
-			cout << "File has opened succesfully.\n";
-			getline(fin, line);
-			while (getline(fin, line)) {
-				stringstream str(line);
-				for (int i = 0; i <= field_type; i++)
-				{
-					getline(str, word, ',');
-					if (word[0] == '"') getCompleteWord(word, str);
-					if (i == field_type)
+			fstream fin(file_name[i], ios::in);
+			int line_num = 1;
+			if (fin.is_open())
+			{
+				cout << "File has opened succesfully.\n";
+				getline(fin, line);
+				while (getline(fin, line)) {
+					stringstream str(line);
+					for (int i = 0; i <= field_type; i++)
 					{
-						insertion_list.insert(word);
-						break;
+						getline(str, word, ',');
+						if (word[0] == '"') getCompleteWord(word, str);
+						if (i == field_type){
+							Key<string> data(word, line_num++, file_name[i]);
+							insertion_list.insert(data);
+							break;
+						}
+
 					}
-
 				}
+
 			}
-
+			fin.close();
 		}
-
-		fin.close();
-
+		
 	}
 
 	int getFieldType()
 	{
-		ifstream fin(file_name, ios::in);
+		ifstream fin(file_name[0], ios::in);
 		string line, word;
 		int field = 0;
 		int disp_index = 0;
@@ -120,7 +129,7 @@ public:
 
 	int getDataType()
 	{
-		ifstream fin(file_name, ios::in);
+		ifstream fin(file_name[0], ios::in);
 		string line, word;
 		int data_type = 0;
 		int disp_index = 0;

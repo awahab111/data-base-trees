@@ -1,5 +1,5 @@
 #include "DataBase.h"
-#include "Key.h"
+//#include "Key.h"
 //AVL_Node<float>* makeAvlTree_float(SLinkedList<string> list)
 //{
 //	AVLTree<float> avl_tree;
@@ -49,8 +49,9 @@
 int main()
 {
 	//string ab = "data_1.csv";
-	Database bruh("data_1.csv");
-	Key<int> m(5, 5, "data_1.csv");
-	m.print();
+	string ab[1] = { "data_1.csv" };
+	Database bruh(ab, 1);
+	//Key<int> m(5, 5, "data_1.csv");
+	//m.print();
 
 }
