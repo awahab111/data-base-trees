@@ -28,11 +28,33 @@ public:
 			cout << line;
 		}
 	}
+
+	int check_datatype(string word) {
+		for (int i = 0; i < word.size(); i++)
+		{
+			if ((word[i] >= 'a' && word[i] <= 'z') || (word[i] >= 'A' && word[i] <= 'Z')) return 1; // returns 1 if the value is a string 
+		}
+		return 0; // returns 0 if the value is float 
+	}
+
+
 	bool operator<(Key val) {
+		if (!check_datatype(key_val)){ // If the string is float then we need to convert string to a float and then compare 
+			float t1 = stof(key_val);
+			float t2 = stof(val.key_val);
+			if (t1 < t2)return true;
+			else return 0;
+		}
 		if (key_val < val.key_val) { return true; }
 		else return false;
 	}
 	bool operator>(Key val) {
+		if (!check_datatype(key_val)) { // If the string is float then we need to convert string to a float and then compare 
+			float t1 = stof(key_val);
+			float t2 = stof(val.key_val);
+			if (t1 > t2)return true;
+			else return 0;
+		}
 		if (key_val > val.key_val) { return true; }
 		else return false;
 	}
@@ -40,5 +62,6 @@ public:
 };
 ostream& operator<<(ostream& out, const Key<string>& k) {
 	out << k.key_val;
+	out << "&" << k.line_num;
 	return out;
 }

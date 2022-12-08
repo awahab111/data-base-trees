@@ -52,7 +52,44 @@ public:
 		return b;
 	}
 
+	void write() {
+		ofstream f1("r1.csv");
+		writeAVLTree(root, f1);
+	}
+
+	void writeAVLTree(AVL_Node<T>* root, ofstream& out) {
+
+		if (!root) {
+			out << "#,";
+		}
+		else {
+			out << root->data << ",";
+			writeAVLTree(root->left, out);
+			writeAVLTree(root->right, out);
+		}
+
+	}
+
+	/*void read() {
+		ifstream f1("r1.csv");
+		void readAVLTRee(root, r1);
+	}
+	void readAVLTRee(AVL_Node<T>* root, ifstream& fin) {
+		string line;
+		getline(line, fin);
+		stringstream str(line);
+		
+	}*/
+
+
+
+
 	void Insert(T val) {
+		/*if (data_type == 0)
+		{
+			float temp = stof(val);
+			Insert_(temp, root);
+		}*/
 		Insert_(val, root);
 	}
 
@@ -66,7 +103,6 @@ public:
 					root = RRotation(root); // RR rotation
 				else
 					root = RL_Rotation(root); // RL rotation
-
 		}
 		else if (X > root->data) {
 			root->right = Insert_(X, root->right);

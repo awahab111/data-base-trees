@@ -32,6 +32,7 @@ public:
 		//insertion_list.print();
 		makeAvlTree();
 		avl_tree.print2D(avl_tree.root, 1);
+		avl_tree.write();
 	}
 
 
