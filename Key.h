@@ -58,10 +58,13 @@ public:
 		if (key_val > val.key_val) { return true; }
 		else return false;
 	}
+	void fileoperator(ostream & fout) {
+		fout << key_val << '&' << line_num << '&' << file_name << '\n';
+	}
 	friend ostream& operator<<(ostream& out, const Key<string>& k);
 };
 ostream& operator<<(ostream& out, const Key<string>& k) {
 	out << k.key_val;
-	out << "&" << k.line_num;
 	return out;
 }
+

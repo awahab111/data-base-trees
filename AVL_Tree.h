@@ -1,5 +1,7 @@
 #pragma once
 #include "Queue.h"
+#include "Key.h"
+//#include <string>
 #include <fstream>
 #include <sstream>
 using namespace std;
@@ -60,27 +62,54 @@ public:
 	void writeAVLTree(AVL_Node<T>* root, ofstream& out) {
 
 		if (!root) {
-			out << "#,";
+			out << "#\n";
 		}
 		else {
-			out << root->data << ",";
+			root->data.fileoperator(out);
 			writeAVLTree(root->left, out);
 			writeAVLTree(root->right, out);
 		}
 
 	}
 
-	/*void read() {
+	void read() {
 		ifstream f1("r1.csv");
-		void readAVLTRee(root, r1);
+		readAVLTree(this->root, f1);
+		f1.close();
 	}
-	void readAVLTRee(AVL_Node<T>* root, ifstream& fin) {
-		string line;
-		getline(line, fin);
-		stringstream str(line);
+	void readAVLTree(AVL_Node<T>*& root, ifstream& fin) {
+		Key<string> key_val;
+		bool isKey;
+		if (!readKey(fin, key_val, isKey)){
+			return;
+		}
+		if (isKey)
+		{
+			root = new AVL_Node<T> (key_val);
+			readAVLTree(root->left, fin);
+			readAVLTree(root->right, fin);
+		}
 		
-	}*/
+		
+	}
 
+	bool readKey(ifstream& fin, Key<string>& data , bool& a) {
+		string line, word;
+		getline(fin, line);
+		stringstream str(line);
+		if (line[0] == '#') {
+			a = false;
+			return false;
+		}
+		getline(str, word, '&');
+		data.key_val = word;
+		getline(str, word, '&');
+		data.line_num = stoi(word);
+		getline(str, word, '\n');
+		data.file_name = word;
+		a = true;
+		return true;
+	}
 
 
 

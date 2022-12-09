@@ -16,7 +16,7 @@ public:
 	string *file_name;
 	int num_of_files;
 	SLinkedList<Key<string>> insertion_list;
-	AVLTree<Key<string>> avl_tree;
+	AVLTree<Key<string>> avl_tree, avl_tree_2;
 
 	Database() {}
 
@@ -31,8 +31,10 @@ public:
 		cout << "Linked List Made " << endl;
 		//insertion_list.print();
 		makeAvlTree();
-		avl_tree.print2D(avl_tree.root, 1);
 		avl_tree.write();
+		avl_tree_2.read();
+		avl_tree_2.print2D(avl_tree_2.root, 1);
+
 	}
 
 
