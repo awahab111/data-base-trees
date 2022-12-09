@@ -7,9 +7,6 @@ public:
 	T key_val;
 	SLinkedList<int> line_buffer;
 	SLinkedList<string> file_name;
-	int line_num;
-	string file_name;
-	int seekgValue;
 
 	Key(){
 	
@@ -20,31 +17,27 @@ public:
 		key_val = x;
 	}
 
-	Key(T x, int line, string f, int seekgVal) {
+	Key(T x, int seekgVal, string f) {
 
 		key_val = x;
-		line_buffer.insert(line);
-		file_name.insert(f);
-		line_num = line;
-		file_name = f;
-		seekgValue = seekgVal;
-	}
-	void update_key(int line_num, string f) {
-		line_buffer.insert(line_num);
+		line_buffer.insert(seekgVal);
 		file_name.insert(f);
 	}
-	//void print() {
-	//	fstream f1(file_name);
-	//	string line, word;
-	//	if (f1.is_open()){
-	//		//cout << "FILE OPENED" << endl;
-	//		for (int i = 0; i < line_num; i++){
-	//			getline(f1, line);
-	//		}
-	//		getline(f1, line);
-	//		cout << line;
-	//	}
-	//}
+	void update_key(int seekgVal, string f) {
+		line_buffer.insert(seekgVal);
+		file_name.insert(f);
+	}
+	void print() {
+		SNode<int>* line_node = line_buffer.head;
+		fstream f1(file_name.head->data);
+		string line, word;
+		if (f1.is_open()){
+			//cout << "FILE OPENED" << endl;
+			f1.seekg(line_node->data);
+			getline(f1, line);
+			cout << line;
+		}
+	}
 
 	int check_datatype(string word) {
 		for (int i = 0; i < word.size(); i++)
@@ -73,6 +66,10 @@ public:
 			else return 0;
 		}
 		if (key_val > val.key_val) { return true; }
+		else return false;
+	}
+	bool operator==(Key val) {
+		if (key_val == val.key_val) { return true; }
 		else return false;
 	}
 	void fileoperator(ostream & fout) {

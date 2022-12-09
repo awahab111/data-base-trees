@@ -39,6 +39,7 @@ class SLinkedList {
 public:
 
 	SNode<T>* head;
+	int numOfItems = 0;
 
 
 	SLinkedList()
@@ -74,6 +75,7 @@ void SLinkedList<T>::insert(T num)
 	{
 		head = newNode;
 		newNode = nullptr;
+		numOfItems++;
 	}
 	else
 	{
@@ -84,6 +86,7 @@ void SLinkedList<T>::insert(T num)
 		}
 		temp->next = newNode;
 		temp = nullptr;
+		numOfItems++;
 	}
 }
 
@@ -95,11 +98,15 @@ void SLinkedList<T>::insertAtHead(T num)
 	{
 		head = newNode;
 		newNode = nullptr;
+		numOfItems++;
+
 	}
 	else
 	{
 		newNode->next = head;
 		head = newNode;
+		numOfItems++;
+
 	}
 }
 
@@ -116,6 +123,7 @@ void SLinkedList<T>::InsertAtIndex(int value, int index)
 	}
 	newNode->next = temp->next;
 	temp->next = newNode;
+	numOfItems++;
 }
 
 template <class T>
@@ -154,6 +162,7 @@ void SLinkedList<T>::remove(T value)
 	traverse->next = temp->next;
 	delete temp;
 	temp = nullptr;
+	numOfItems--;
 
 }
 

@@ -199,7 +199,7 @@ public:
 			AVL_Node<T>* temp = root;
 			while (temp)
 			{
-				if (temp->data.key_val == node.key_val) return temp;
+				if (temp->data == node) return temp;
 				if (node > temp->data)
 					temp = temp->right;
 				else if (node < temp->data)

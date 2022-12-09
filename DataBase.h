@@ -17,6 +17,7 @@ public:
 	int num_of_files;
 	SLinkedList<Key<string>> insertion_list;
 	AVLTree<Key<string>> avl_tree, avl_tree_2;
+	SLinkedList<string> fieldHeadings;
 
 	Database() {}
 
@@ -29,10 +30,12 @@ public:
 		cout << "Create Linked List" << endl;
 		createLinkedList();
 		cout << "Linked List Made " << endl;
-		insertion_list.print();
-		//makeAvlTree();
-		//avl_tree.write();
-		//avl_tree_2.read();
+		//insertion_list.print();
+		insertion_list.head->data.print();
+		makeAvlTree();
+		avl_tree.write();
+		avl_tree_2.read();
+		pointSearch();
 		//avl_tree_2.print2D(avl_tree_2.root, 1);
 	}
 
@@ -80,13 +83,14 @@ public:
 	{
 		string line, word;
 		SNode<Key<string>> *duplicate = insertion_list.head;
-		bool flag = false;
+		bool flag = true;
 		for (int i = 0; i < num_of_files; i++)
 		{
 			fstream fin(file_name[i], ios::in);
 			int line_num = 1;
 			if (fin.is_open())
 			{
+				getline(fin, line);
 				int seekgVal = fin.tellg(); // starting value of first 'data' row
 				while (getline(fin, line)) {	//this loop is for traversing through the whole file line by line
 					stringstream str(line);
@@ -95,22 +99,22 @@ public:
 						getline(str, word, ',');
 						if (word[0] == '"') getCompleteWord(word, str);
 						if (j == field_type){
+							//------------------------
 							while (duplicate != NULL){
 								if (duplicate->data.key_val == word){
-									duplicate->data.update_key(line_num++, file_name[i]);
+									duplicate->data.update_key(seekgVal, file_name[i]);
 									flag = false;
 									break;
 								}
 								duplicate = duplicate->next;
 							}
 							duplicate = insertion_list.head;
+							//------------------------
 							if (flag){
-								Key<string> data(word, line_num++, file_name[i]);
+								Key<string> data(word, seekgVal, file_name[i]);
 								insertion_list.insert(data);
 							}
 							flag = true;
-							Key<string> data(word, line_num++, file_name[i], seekgVal);
-							insertion_list.insert(data);
 							break;
 						}
 					}
@@ -130,10 +134,12 @@ public:
 		if (fin.is_open())
 		{
 			//cout << "File has opened succesfully.\n";
+
 			getline(fin, line);
 			stringstream str(line);
 			while (getline(str, word, ',')) {
-				cout << disp_index << ". " << word << endl;
+				fieldHeadings.insert(word); // filling up the headings linkedList
+				cout << disp_index << ". " << word << endl; //displaying the headings for user to create index tree on
 				disp_index++;
 			}
 			cout << "Choose field type : ";
@@ -191,25 +197,45 @@ public:
 		str.get();// to skip the comma-
 	}
 
-	//template<class T>
+//	template<class T>
 	void pointSearch()
 	{
-		string input;
+		string input = "";
 		cout << "Search for: ";
+		cin.ignore();
 		getline(cin, input);
+
 		Key<string> searchKey(input); // ==> searchKey.key_value = input;
 		AVL_Node<Key<string>>* node = avl_tree.retrieve(searchKey);
 		if (node == nullptr)
 			cout << "No such key was found.\n";
 		else
 		{
-			string filename = node->data.file_name;
-			string output;
-			int seekgVal = node->data.seekgValue;
-			ifstream fin(filename);
-			fin.seekg(seekgVal);
-			getline(fin, output);
-			cout <<"Following data has been found:\n" << output << endl;
+			string line, word;
+;			SNode<string>* filename = node->data.file_name.head;
+			SNode<int> *seekgVal = node->data.line_buffer.head;
+			cout << "Following data has been found:\n";
+			for (int i = 0; i < (node->data.file_name.numOfItems); i++)
+			{
+
+				ifstream fin(filename->data);
+				fin.seekg(seekgVal->data);	//jumping to the index line
+				getline(fin, line);	//reading the line
+				stringstream str(line);
+				SNode<string>* heading = fieldHeadings.head;
+				cout << "===========================\n";
+				while (heading)
+				{
+					getline(str, word, ',');
+					if (word[0] == '"') getCompleteWord(word, str);
+					cout << heading->data << ": " << word << endl;
+					heading = heading->next;
+				}
+				cout << "===========================\n";
+				fin.close();
+				filename = filename->next;
+				seekgVal = seekgVal->next;
+			}
 		}
 	}
 
