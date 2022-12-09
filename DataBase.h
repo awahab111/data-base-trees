@@ -29,12 +29,11 @@ public:
 		cout << "Create Linked List" << endl;
 		createLinkedList();
 		cout << "Linked List Made " << endl;
-		//insertion_list.print();
-		makeAvlTree();
-		avl_tree.write();
-		avl_tree_2.read();
-		avl_tree_2.print2D(avl_tree_2.root, 1);
-
+		insertion_list.print();
+		//makeAvlTree();
+		//avl_tree.write();
+		//avl_tree_2.read();
+		//avl_tree_2.print2D(avl_tree_2.root, 1);
 	}
 
 
@@ -80,13 +79,14 @@ public:
 	void createLinkedList()
 	{
 		string line, word;
+		SNode<Key<string>> *duplicate = insertion_list.head;
+		bool flag = false;
 		for (int i = 0; i < num_of_files; i++)
 		{
 			fstream fin(file_name[i], ios::in);
 			int line_num = 1;
 			if (fin.is_open())
 			{
-				getline(fin, line);
 				int seekgVal = fin.tellg(); // starting value of first 'data' row
 				while (getline(fin, line)) {	//this loop is for traversing through the whole file line by line
 					stringstream str(line);
@@ -95,6 +95,20 @@ public:
 						getline(str, word, ',');
 						if (word[0] == '"') getCompleteWord(word, str);
 						if (j == field_type){
+							while (duplicate != NULL){
+								if (duplicate->data.key_val == word){
+									duplicate->data.update_key(line_num++, file_name[i]);
+									flag = false;
+									break;
+								}
+								duplicate = duplicate->next;
+							}
+							duplicate = insertion_list.head;
+							if (flag){
+								Key<string> data(word, line_num++, file_name[i]);
+								insertion_list.insert(data);
+							}
+							flag = true;
 							Key<string> data(word, line_num++, file_name[i], seekgVal);
 							insertion_list.insert(data);
 							break;
