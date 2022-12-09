@@ -7,16 +7,27 @@ public:
 	T key_val;
 	SLinkedList<int> line_buffer;
 	SLinkedList<string> file_name;
+	int line_num;
+	string file_name;
+	int seekgValue;
 
 	Key(){
 	
 	}
 
-	Key(T x, int line, string f) {
+	Key(T x)
+	{
+		key_val = x;
+	}
+
+	Key(T x, int line, string f, int seekgVal) {
 
 		key_val = x;
 		line_buffer.insert(line);
 		file_name.insert(f);
+		line_num = line;
+		file_name = f;
+		seekgValue = seekgVal;
 	}
 	void update_key(int line_num, string f) {
 		line_buffer.insert(line_num);
