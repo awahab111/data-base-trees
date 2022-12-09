@@ -6,14 +6,16 @@ public:
 	T key_val;
 	int line_num;
 	string file_name;
+	int seekgValue;
 
 	Key(){}
 
-	Key(T x, int line, string f) {
+	Key(T x, int line, string f, int seekgVal) {
 
 		key_val = x;
 		line_num = line;
 		file_name = f;
+		seekgValue = seekgVal;
 	}
 
 	void print() {

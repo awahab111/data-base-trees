@@ -87,18 +87,20 @@ public:
 			if (fin.is_open())
 			{
 				getline(fin, line);
-				while (getline(fin, line)) {
+				int seekgVal = fin.tellg(); // starting value of first 'data' row
+				while (getline(fin, line)) {	//this loop is for traversing through the whole file line by line
 					stringstream str(line);
-					for (int j = 0; j <= field_type; j++)
+					for (int j = 0; j <= field_type; j++) // this loop is for traversing through the columns of a single row
 					{
 						getline(str, word, ',');
 						if (word[0] == '"') getCompleteWord(word, str);
 						if (j == field_type){
-							Key<string> data(word, line_num++, file_name[i]);
+							Key<string> data(word, line_num++, file_name[i], seekgVal);
 							insertion_list.insert(data);
 							break;
 						}
 					}
+					seekgVal = fin.tellg();	//	getting the start value of each row
 				}
 			}
 			fin.close();
