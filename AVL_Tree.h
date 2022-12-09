@@ -181,25 +181,27 @@ public:
 		return LRotation(K1);
 	}
 
-	bool retrive(int k)
+
+	AVL_Node<T>* retrieve(Key<string> node)
 	{
 		if (!root)
 		{
-			return false;
+			cout << "Tree does not exist.\n";
+			return nullptr;
 		}
 		else
 		{
 			AVL_Node<T>* temp = root;
 			while (temp)
 			{
-				if (temp->data == k) return true;
-				if (k > temp->data)
+				if (temp->data.key_val == node.key_val) return temp;
+				if (node > temp->data)
 					temp = temp->right;
-				else if (k < temp->data)
+				else if (node < temp->data)
 					temp = temp->left;
 			}
 		}
-		return false;
+		return nullptr;		//value wasnt found
 	}
 
 	void PreOrderTraversal(AVL_Node<T>* node)

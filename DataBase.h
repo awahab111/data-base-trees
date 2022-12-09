@@ -168,6 +168,7 @@ public:
 		return 0; // returns 0 if the value is float 
 	}
 
+
 	void getCompleteWord(string& word, stringstream& str)
 	{
 		string temp;
@@ -175,5 +176,27 @@ public:
 		word += temp;
 		str.get();// to skip the comma-
 	}
+
+	//template<class T>
+	void pointSearch()
+	{
+		string input;
+		cout << "Search for: ";
+		getline(cin, input);
+		Key<string> searchKey(input); // ==> searchKey.key_value = input;
+		AVL_Node<Key<string>>* node = avl_tree.retrieve(searchKey);
+		if (node == nullptr)
+			cout << "No such key was found.\n";
+		else
+		{
+			string filename = node->data.file_name;
+			string output;
+			int seekgVal = node->data.seekgValue;
+			ifstream fin(filename);
+			fin.seekg(seekgVal);
+			getline(fin, output);
+			cout <<"Following data has been found:\n" << output << endl;
+		}
+	}
+
 };
-// this is wahab branch

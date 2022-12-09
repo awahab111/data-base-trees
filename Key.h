@@ -10,6 +10,11 @@ public:
 
 	Key(){}
 
+	Key(T x)
+	{
+		key_val = x;
+	}
+
 	Key(T x, int line, string f, int seekgVal) {
 
 		key_val = x;
