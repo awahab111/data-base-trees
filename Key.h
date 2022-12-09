@@ -4,6 +4,7 @@ template <class T>
 class Key {
 public:
 	T key_val;
+	int seekgValue
 	int line_num;
 	string file_name;
 
@@ -68,4 +69,4 @@ ostream& operator<<(ostream& out, const Key<string>& k) {
 	return out;
 }
 
-//new change
+//new new new change
