@@ -101,12 +101,18 @@ public:
 			a = false;
 			return false;
 		}
-		getline(str, word, '&');
+		getline(str, word, ',');
 		data.key_val = word;
-		getline(str, word, '&');
-		data.line_num = stoi(word);
-		getline(str, word, '\n');
-		data.file_name = word;
+		getline(str, word, ',');
+		while (!(word[0] == '#')) {
+			data.line_buffer.insert(stoi(word));
+			getline(str, word, ',');
+		}
+		getline(str, word, ',');
+		while (!(word[0] == '#')) {
+			data.file_name.insert(word);
+			getline(str, word, ',');
+		}
 		a = true;
 		return true;
 	}
@@ -124,7 +130,6 @@ public:
 
 	AVL_Node<T>* Insert_(T X, AVL_Node<T>* root) {
 		if (root == NULL)	root = new AVL_Node<T>(X);
-
 		else if (X < root->data) {
 			root->left = Insert_(X, root->left);
 			if (Height(root->left) - Height(root->right) == 2)
@@ -181,25 +186,27 @@ public:
 		return LRotation(K1);
 	}
 
-	bool retrive(int k)
+
+	AVL_Node<T>* retrieve(Key<string> node)
 	{
 		if (!root)
 		{
-			return false;
+			cout << "Tree does not exist.\n";
+			return nullptr;
 		}
 		else
 		{
 			AVL_Node<T>* temp = root;
 			while (temp)
 			{
-				if (temp->data == k) return true;
-				if (k > temp->data)
+				if (temp->data.key_val == node.key_val) return temp;
+				if (node > temp->data)
 					temp = temp->right;
-				else if (k < temp->data)
+				else if (node < temp->data)
 					temp = temp->left;
 			}
 		}
-		return false;
+		return nullptr;		//value wasnt found
 	}
 
 	void PreOrderTraversal(AVL_Node<T>* node)

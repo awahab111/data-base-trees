@@ -29,12 +29,11 @@ public:
 		cout << "Create Linked List" << endl;
 		createLinkedList();
 		cout << "Linked List Made " << endl;
-		//insertion_list.print();
-		makeAvlTree();
-		avl_tree.write();
-		avl_tree_2.read();
-		avl_tree_2.print2D(avl_tree_2.root, 1);
-
+		insertion_list.print();
+		//makeAvlTree();
+		//avl_tree.write();
+		//avl_tree_2.read();
+		//avl_tree_2.print2D(avl_tree_2.root, 1);
 	}
 
 
@@ -80,25 +79,42 @@ public:
 	void createLinkedList()
 	{
 		string line, word;
+		SNode<Key<string>> *duplicate = insertion_list.head;
+		bool flag = false;
 		for (int i = 0; i < num_of_files; i++)
 		{
 			fstream fin(file_name[i], ios::in);
 			int line_num = 1;
 			if (fin.is_open())
 			{
-				getline(fin, line);
-				while (getline(fin, line)) {
+				int seekgVal = fin.tellg(); // starting value of first 'data' row
+				while (getline(fin, line)) {	//this loop is for traversing through the whole file line by line
 					stringstream str(line);
-					for (int j = 0; j <= field_type; j++)
+					for (int j = 0; j <= field_type; j++) // this loop is for traversing through the columns of a single row
 					{
 						getline(str, word, ',');
 						if (word[0] == '"') getCompleteWord(word, str);
 						if (j == field_type){
-							Key<string> data(word, line_num++, file_name[i]);
+							while (duplicate != NULL){
+								if (duplicate->data.key_val == word){
+									duplicate->data.update_key(line_num++, file_name[i]);
+									flag = false;
+									break;
+								}
+								duplicate = duplicate->next;
+							}
+							duplicate = insertion_list.head;
+							if (flag){
+								Key<string> data(word, line_num++, file_name[i]);
+								insertion_list.insert(data);
+							}
+							flag = true;
+							Key<string> data(word, line_num++, file_name[i], seekgVal);
 							insertion_list.insert(data);
 							break;
 						}
 					}
+					seekgVal = fin.tellg();	//	getting the start value of each row
 				}
 			}
 			fin.close();
@@ -166,6 +182,7 @@ public:
 		return 0; // returns 0 if the value is float 
 	}
 
+
 	void getCompleteWord(string& word, stringstream& str)
 	{
 		string temp;
@@ -173,5 +190,27 @@ public:
 		word += temp;
 		str.get();// to skip the comma-
 	}
+
+	//template<class T>
+	void pointSearch()
+	{
+		string input;
+		cout << "Search for: ";
+		getline(cin, input);
+		Key<string> searchKey(input); // ==> searchKey.key_value = input;
+		AVL_Node<Key<string>>* node = avl_tree.retrieve(searchKey);
+		if (node == nullptr)
+			cout << "No such key was found.\n";
+		else
+		{
+			string filename = node->data.file_name;
+			string output;
+			int seekgVal = node->data.seekgValue;
+			ifstream fin(filename);
+			fin.seekg(seekgVal);
+			getline(fin, output);
+			cout <<"Following data has been found:\n" << output << endl;
+		}
+	}
+
 };
-// this is wahab branch
