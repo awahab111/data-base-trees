@@ -38,7 +38,7 @@ public:
 		//pointSearch();
 		//avl_tree_2.print2D(avl_tree_2.root, 1);
 		//Update();
-		Range_Search();
+		//Range_Search();
 		Delete();
 	}
 
@@ -391,16 +391,16 @@ public:
 			fstream fout(filename_node->data, ios::in | ios::out);
 			fout.seekp(seekgVal->data);
 			SNode<string>* heading = fieldHeadings.head;
-			stringstream str(line);
 			getline(fout, line);
+			stringstream str(line);
 			while (heading != NULL)
 			{
 				getline(str, word ,',');
 				if (word[0] == '"') getCompleteWord(word, str);
 				for (int i = 0; i < word.size(); i++){
-					fout << '#';
+					fout << "# ";
 				}
-				fout << ',';
+				fout << "# ,";
 				heading = heading->next;
 			}
 			fout.close();
@@ -416,7 +416,7 @@ public:
 		getline(cin, delete_val);
 		Key<string> delete_key(delete_val);
 		AVL_Node<Key<string>>* delete_node = avl_tree.retrieve(delete_key);
-		//remove(delete_node);
+		remove(delete_node);
 		//avl_tree.Delete(delete_key, avl_tree.root);
 	}
 
