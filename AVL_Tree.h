@@ -329,7 +329,7 @@ public:
 			Height(N->right);
 	}
 
-	AVL_Node<T>* Delete(int val, AVL_Node<T>* node) {
+	AVL_Node<T>* Delete(T val, AVL_Node<T>* node) {
 		AVL_Node<T>* temp;
 		if (!node) return node;
 		else if (val == node->data) {
