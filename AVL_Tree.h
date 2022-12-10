@@ -242,6 +242,17 @@ public:
 
 	}
 
+	void RangeSearch(AVL_Node<T>* root, T lower_lim, T upper_lim, SLinkedList<T>& result) {
+		if (root == NULL) { return; }
+		if (lower_lim < root->data){
+			RangeSearch(root->left, lower_lim, upper_lim, result);
+		}
+		if ((root->data < upper_lim || root->data == upper_lim) && (root->data > lower_lim || root->data == lower_lim)) {
+			result.insert(root->data);
+		}
+		RangeSearch(root->right, lower_lim, upper_lim, result);
+	}
+
 	/*void LevelOrder(AVL_Node<T>* root)
 	{
 		if (root == nullptr)return;
@@ -318,7 +329,7 @@ public:
 			Height(N->right);
 	}
 
-	AVL_Node<T>* Delete(int val, AVL_Node<T>* node) {
+	AVL_Node<T>* Delete(T val, AVL_Node<T>* node) {
 		AVL_Node<T>* temp;
 		if (!node) return node;
 		else if (val == node->data) {

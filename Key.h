@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <string>
+#include <sstream>
 #include "SinglyLinkedList.h"
 template <class T>
 class Key {
@@ -27,15 +29,29 @@ public:
 		line_buffer.insert(seekgVal);
 		file_name.insert(f);
 	}
-	void print() {
-		SNode<int>* line_node = line_buffer.head;
-		fstream f1(file_name.head->data);
+	void print(SLinkedList<string>& fieldHeadings) {
+		SNode<int>* seekgVal = line_buffer.head;
+		SNode<string>* filename = file_name.head;
 		string line, word;
-		if (f1.is_open()){
-			//cout << "FILE OPENED" << endl;
-			f1.seekg(line_node->data);
-			getline(f1, line);
-			cout << line;
+		while (filename != NULL){
+			ifstream fin(filename->data);
+			fin.seekg(seekgVal->data);	//jumping to the index line
+			getline(fin, line);	//reading the line
+			stringstream str(line);
+			SNode<string>* heading = fieldHeadings.head;
+			cout << "===========================\n";
+			while (heading)
+			{
+				getline(str, word, ',');
+				if (word[0] == '"') getCompleteWord(word, str);
+				cout << heading->data << ": " << word << endl;
+				heading = heading->next;
+			}
+			cout << "===========================\n";
+			fin.close();
+			filename = filename->next;
+			seekgVal = seekgVal->next;
+
 		}
 	}
 
@@ -47,6 +63,14 @@ public:
 		return 0; // returns 0 if the value is float 
 	}
 
+	void getCompleteWord(string& word, stringstream& str)
+	{
+		string temp;
+		getline(str, temp, '"');
+		word += temp;
+		word += "\"";
+		str.get();// to skip the comma-
+	}
 
 	bool operator<(Key val) {
 		if (!check_datatype(key_val)){ // If the string is float then we need to convert string to a float and then compare 
@@ -92,10 +116,10 @@ public:
 ostream& operator<<(ostream& out, const Key<string>& k) {
 	SNode<int>* line = k.line_buffer.head;
 	out << k.key_val << " ";
-	while (line != NULL){
+	/*while (line != NULL){
 		out << line->data << " ";
 		line = line->next;
-	}
-	out << endl;
+	}*/
+	//out << endl;
 	return out;
 }
