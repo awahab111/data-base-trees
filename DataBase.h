@@ -37,7 +37,8 @@ public:
 		avl_tree_2.read();
 		//pointSearch();
 		//avl_tree_2.print2D(avl_tree_2.root, 1);
-		Update();
+		//Update();
+		whereClause();
 	}
 
 
@@ -200,14 +201,35 @@ public:
 		str.get();// to skip the comma-
 	}
 
-//	template<class T>
-	void pointSearch()
+	void whereClause()
+	{
+		
+		string key, field, value,operation, whereClause;
+		cout << "Enter the where clause: ";
+		cin.ignore();
+		getline(cin, whereClause);
+		stringstream str(whereClause);
+		str >> operation;
+		str >> key;
+		str >> field; // skipping the "where" word
+		str >> field;
+		str >> value; // skipping '='
+		str >> value;
+	if(operation[0] == 'p' || operation[0] == 'P')
+		pointSearch(key, field, value);
+
+	}
+
+	void pointSearchCall()
 	{
 		string input = "";
-		cout << "Search for: ";
+		cout << "Enter the key you want to search for: ";
 		cin.ignore();
 		getline(cin, input);
-
+		pointSearch(input, "", "");
+	}
+	void pointSearch(string& input, string field, string value)
+	{
 		Key<string> searchKey(input); // ==> searchKey.key_value = input;
 		AVL_Node<Key<string>>* node = avl_tree.retrieve(searchKey);
 		if (node == nullptr)
@@ -217,28 +239,80 @@ public:
 			string line, word;
 			SNode<string>* filename = node->data.file_name.head;
 			SNode<int> *seekgVal = node->data.line_buffer.head;
-			cout << "Following data has been found:\n";
-			for (int i = 0; i < (node->data.file_name.numOfItems); i++)
-			{
 
-				ifstream fin(filename->data);
-				fin.seekg(seekgVal->data);	//jumping to the index line
-				getline(fin, line);	//reading the line
-				stringstream str(line);
-				SNode<string>* heading = fieldHeadings.head;
-				cout << "===========================\n";
-				while (heading)
+			//========================== If where clause is used =====================
+			if (field != "")		
+			{
+				//---------------- Finding the line that is to be displayed
+				for (int i = 0; i < (node->data.file_name.numOfItems); i++)
 				{
-					getline(str, word, ',');
-					if (word[0] == '"') getCompleteWord(word, str);
-					cout << heading->data << ": " << word << endl;
-					heading = heading->next;
+
+					ifstream fin(filename->data);
+					fin.seekg(seekgVal->data);	//jumping to the index line
+					getline(fin, line);	//reading the line
+					stringstream str(line);
+					SNode<string>* heading = fieldHeadings.head;
+					while (field != heading->data)
+					{	
+						getline(str, word, ',');
+						if (word[0] == '"') getCompleteWord(word, str);
+						heading = heading->next;
+
+					}
+					getline(str, word, ','); 
+					if (word == value)	// if the value of wherecaluse matches the value of the inputted field 
+					{
+						fin.seekg(seekgVal->data, ios::beg);	//go to the start of that line
+						getline(fin, line);	// read the line
+						stringstream str(line);	//convert the line to stream
+						//displaying the line
+						heading = fieldHeadings.head;
+						cout << "===========================\n";
+						while (heading)
+						{
+							getline(str, word, ',');
+							if (word[0] == '"') getCompleteWord(word, str);
+							cout << heading->data << ": " << word << endl;
+							heading = heading->next;
+						}
+						cout << "===========================\n";
+						fin.close();
+						return;	
+					}
+					fin.close();
+					filename = filename->next;
+					seekgVal = seekgVal->next;
 				}
-				cout << "===========================\n";
-				fin.close();
-				filename = filename->next;
-				seekgVal = seekgVal->next;
+				cout << "No such field/value was found.\n";
 			}
+
+			else
+			{
+				//========================== Point search without Where clause =====================
+				cout << "Following data has been found:\n";
+				for (int i = 0; i < (node->data.file_name.numOfItems); i++)
+				{
+
+					ifstream fin(filename->data);
+					fin.seekg(seekgVal->data);	//jumping to the line to which key is pointing (multiple lines if duplicates are present)
+					getline(fin, line);
+					stringstream str(line);
+					SNode<string>* heading = fieldHeadings.head;
+					cout << "===========================\n";
+					while (heading)
+					{
+						getline(str, word, ',');
+						if (word[0] == '"') getCompleteWord(word, str);
+						cout << heading->data << ": " << word << endl;
+						heading = heading->next;
+					}
+					cout << "===========================\n";
+					fin.close();
+					filename = filename->next;
+					seekgVal = seekgVal->next;
+				}
+			}
+		
 		}
 	}
 
@@ -256,7 +330,7 @@ public:
 		getline(cin, newVal);
 
 		Key<string> searchKey(input); // ==> searchKey.key_value = input;
-		AVL_Node<Key<string>>* node = avl_tree.retrieve(searchKey);
+		AVL_Node<Key<string>>* node = avl_tree.retrieve(searchKey); //searchKey variable was made for the convenience of comparison in the retrieve function
 
 		if (node == nullptr)
 			cout << "No such key was found.\n";
@@ -284,8 +358,8 @@ public:
 					heading = heading->next;
 
 				}
-				//----- this condition is necessary in case of repeated old values
 				getline(str, word, ',');
+				// fetching the line and seekg value of the line that is to be udpated
 				if (word == oldVal) 
 				{
 					matchingValCount++;
@@ -303,10 +377,10 @@ public:
 				seekgVal = seekgVal->next;
 			}
 
-			//--------- saving the line
+			//--------- saving the line in a linked list word by word
 			string tempLine;
 			SLinkedList<string> updateLine;
-			SLinkedList<string> remainingLines;
+			SLinkedList<string> remainingLines;		//if newVal > oldVal, we stream out the lines below the update_line into the file as well to get rid of the "no space" issue
 			ifstream fin(updateFilename);
 			fin.seekg(updateLineSeekg);
 			getline(fin, line);				//reading the line that is to be overriden
@@ -316,13 +390,14 @@ public:
 				if (word[0] == '"') getCompleteWord(word, str);
 				updateLine.insert(word);
 			}
-			if(newVal > oldVal)
+			
+			if(newVal > oldVal) //---- special case
 			while(getline(fin, tempLine))
 			{
 				remainingLines.insert(tempLine);
 			}
 			fin.close();
-			//------------ writing the line to file
+			//==============| ----- writing the line to file ------ //==============|
 			SNode<string>* traverser = updateLine.head;
 			ofstream fout(updateFilename, ios:: in | ios::out);
 			fout.seekp(updateLineSeekg);
@@ -348,6 +423,7 @@ public:
 					fout << traverser->data;
 				traverser = traverser->next;
 			}
+			//------- special case
 			if (newVal > oldVal)
 			{
 				fout << '\n';
@@ -359,7 +435,7 @@ public:
 					
 				}
 			}
-		//	fout << tempLine;
+			//-----------
 			fout.close();
 		}
 
