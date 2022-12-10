@@ -35,8 +35,9 @@ public:
 		makeAvlTree();
 		avl_tree.write();
 		avl_tree_2.read();
-		pointSearch();
+		//pointSearch();
 		//avl_tree_2.print2D(avl_tree_2.root, 1);
+		Update();
 	}
 
 
@@ -194,6 +195,7 @@ public:
 		string temp;
 		getline(str, temp, '"');
 		word += temp;
+		word += "\"";
 		str.get();// to skip the comma-
 	}
 
@@ -212,7 +214,7 @@ public:
 		else
 		{
 			string line, word;
-;			SNode<string>* filename = node->data.file_name.head;
+			SNode<string>* filename = node->data.file_name.head;
 			SNode<int> *seekgVal = node->data.line_buffer.head;
 			cout << "Following data has been found:\n";
 			for (int i = 0; i < (node->data.file_name.numOfItems); i++)
@@ -237,6 +239,103 @@ public:
 				seekgVal = seekgVal->next;
 			}
 		}
+	}
+
+	void Update()
+	{
+		string input, field, oldVal, newVal;
+		cin.ignore();
+		cout << "Enter the key whose data you want to update: ";
+		getline(cin, input);
+		cout << "Name of the field to be modified: ";
+		getline(cin, field);
+		cout << "Enter the old value: ";
+		getline(cin, oldVal);
+		cout << "Enter the new value: ";
+		getline(cin, newVal);
+
+		Key<string> searchKey(input); // ==> searchKey.key_value = input;
+		AVL_Node<Key<string>>* node = avl_tree.retrieve(searchKey);
+
+		if (node == nullptr)
+			cout << "No such key was found.\n";
+		else
+		{
+			string line, word, updateFilename;
+			int matchingValCount = 0, updateLineSeekg = 0;
+			SNode<string>* filename = node->data.file_name.head;
+			SNode<int>* seekgVal = node->data.line_buffer.head;
+
+			//---------------- Finding the line that is to be updated
+			for (int i = 0; i < (node->data.file_name.numOfItems); i++)
+			{
+
+				ifstream fin(filename->data);			
+				fin.seekg(seekgVal->data);	//jumping to the index line
+				getline(fin, line);	//reading the line
+				stringstream str(line);
+				//
+				SNode<string>* heading = fieldHeadings.head;
+				while (field != heading->data)
+				{
+					getline(str, word, ',');
+					if (word[0] == '"') getCompleteWord(word, str);
+					heading = heading->next;
+
+				}
+				//----- this condition is necessary in case of repeated old values
+				getline(str, word, ',');
+				if (word == oldVal) 
+				{
+					matchingValCount++;
+					updateLineSeekg = seekgVal->data;
+					updateFilename = filename->data;
+				}
+				if (matchingValCount > 1) //------ if The old value is repeated, error is displayed.
+				{
+					cout << "Error404: Duplicate Old values were found.\n";
+					return;
+				}
+				//
+				fin.close();
+				filename = filename->next;
+				seekgVal = seekgVal->next;
+			}
+
+			//--------- saving the line
+			SLinkedList<string> updateLine;
+			ifstream fin(updateFilename);
+			fin.seekg(updateLineSeekg);
+			getline(fin, line);
+			stringstream str(line);
+			while (getline(str, word, ','))
+			{
+				if (word[0] == '"') getCompleteWord(word, str);
+				updateLine.insert(word);
+			}
+			fin.close();
+			//------------ writing the line to file
+			SNode<string>* traverser = updateLine.head;
+			fstream fout(updateFilename, ios:: app);
+			fout.seekp(updateLineSeekg);
+			SNode<string>* heading = fieldHeadings.head;
+			while (field != heading->data)
+			{
+				fout << traverser->data << ',';
+				traverser = traverser->next;
+				heading = heading->next;
+			}
+			fout << newVal << ',';
+			traverser = traverser->next; //skipping the old value
+			while (traverser)
+			{
+				fout << traverser->data << ',';
+				traverser = traverser->next;
+			}
+			fout << '\n';
+			fout.close();
+		}
+
 	}
 
 };
