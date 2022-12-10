@@ -194,6 +194,7 @@ public:
 	{
 		string temp;
 		getline(str, temp, '"');
+		word += ',';
 		word += temp;
 		word += "\"";
 		str.get();// to skip the comma-
@@ -303,21 +304,33 @@ public:
 			}
 
 			//--------- saving the line
+			string tempLine;
 			SLinkedList<string> updateLine;
+			SLinkedList<string> remainingLines;
 			ifstream fin(updateFilename);
 			fin.seekg(updateLineSeekg);
-			getline(fin, line);
+			getline(fin, line);				//reading the line that is to be overriden
 			stringstream str(line);
 			while (getline(str, word, ','))
 			{
 				if (word[0] == '"') getCompleteWord(word, str);
 				updateLine.insert(word);
 			}
+			if(newVal > oldVal)
+			while(getline(fin, tempLine))
+			{
+				remainingLines.insert(tempLine);
+			}
 			fin.close();
 			//------------ writing the line to file
 			SNode<string>* traverser = updateLine.head;
-			fstream fout(updateFilename, ios:: app);
+			ofstream fout(updateFilename, ios:: in | ios::out);
 			fout.seekp(updateLineSeekg);
+			//--------- removing the old line
+			for (int i = 0; i < line.size(); i++)
+				fout << '\0';
+			//-----
+			fout.seekp(updateLineSeekg, ios::beg);
 			SNode<string>* heading = fieldHeadings.head;
 			while (field != heading->data)
 			{
@@ -329,10 +342,24 @@ public:
 			traverser = traverser->next; //skipping the old value
 			while (traverser)
 			{
-				fout << traverser->data << ',';
+				if (traverser->next)	//if end is not reached
+					fout << traverser->data << ',';
+				else
+					fout << traverser->data;
 				traverser = traverser->next;
 			}
-			fout << '\n';
+			if (newVal > oldVal)
+			{
+				fout << '\n';
+				traverser = remainingLines.head;
+				while (traverser)
+				{
+					fout << traverser->data << '\n';
+					traverser = traverser->next;
+					
+				}
+			}
+		//	fout << tempLine;
 			fout.close();
 		}
 
