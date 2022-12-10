@@ -31,16 +31,15 @@ public:
 		createLinkedList();
 		cout << "Linked List Made " << endl;
 		//insertion_list.print();
-		insertion_list.head->data.print();
+		//insertion_list.head->data.print();
 		makeAvlTree();
 		avl_tree.write();
 		avl_tree_2.read();
 		//pointSearch();
 		//avl_tree_2.print2D(avl_tree_2.root, 1);
-		Update();
+		//Update();
+		Range_Search();
 	}
-
-
 
 	void makeAvlTree()
 	{
@@ -51,7 +50,6 @@ public:
 			snode = snode->next;
 		}
 	}
-
 
 	void show_data() {
 		fstream fin(file_name[0], ios::in);
@@ -151,7 +149,6 @@ public:
 		return field;
 	}
 
-
 	int getDataType()
 	{
 		ifstream fin(file_name[0], ios::in);
@@ -189,7 +186,6 @@ public:
 		return 0; // returns 0 if the value is float 
 	}
 
-
 	void getCompleteWord(string& word, stringstream& str)
 	{
 		string temp;
@@ -198,6 +194,34 @@ public:
 		word += "\"";
 		str.get();// to skip the comma-
 	}
+
+	//void Print_Key() {
+	//	string line, word;
+	//	SNode<string>* filename = node->data.file_name.head;
+	//	SNode<int>* seekgVal = node->data.line_buffer.head;
+	//	cout << "Following data has been found:\n";
+	//	for (int i = 0; i < (node->data.file_name.numOfItems); i++)
+	//	{
+
+	//		ifstream fin(filename->data);
+	//		fin.seekg(seekgVal->data);	//jumping to the index line
+	//		getline(fin, line);	//reading the line
+	//		stringstream str(line);
+	//		SNode<string>* heading = fieldHeadings.head;
+	//		cout << "===========================\n";
+	//		while (heading)
+	//		{
+	//			getline(str, word, ',');
+	//			if (word[0] == '"') getCompleteWord(word, str);
+	//			cout << heading->data << ": " << word << endl;
+	//			heading = heading->next;
+	//		}
+	//		cout << "===========================\n";
+	//		fin.close();
+	//		filename = filename->next;
+	//		seekgVal = seekgVal->next;
+	//	}
+	//}
 
 //	template<class T>
 	void pointSearch()
@@ -239,6 +263,26 @@ public:
 				seekgVal = seekgVal->next;
 			}
 		}
+	}
+
+	void Range_Search() {
+		string lower, upper;
+		//---------------Taking Input for out range--------------------
+		cin.ignore();
+		cout << "Enter your Lower Search Limit: ";
+		getline(cin, lower);
+		cout << "Enter your Upper Search Limit: ";
+		getline(cin, upper);
+		//-----------------------------------------
+		Key<string> lower_lim(lower), upper_lim(upper); // Making the input into keys
+		SLinkedList <Key<string>> search_result; // Initializing our linked list for the search results which we get from our range search
+		avl_tree.RangeSearch(avl_tree.root, lower_lim, upper_lim, search_result);// Calling the Range search function in AVL Tree 
+		SNode<Key<string>>* search_node = search_result.head;
+		while (search_node != NULL){
+			search_node->data.print(fieldHeadings);// printing the values of our keys
+			search_node = search_node->next;
+		}
+
 	}
 
 	void Update()
