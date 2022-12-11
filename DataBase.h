@@ -25,21 +25,73 @@ public:
 		num_of_files = files_count;
 		file_name = new string[num_of_files];
 		for (int i = 0; i < num_of_files; i++) { file_name[i] = f1[i]; }
-		field_type = getFieldType();
-		data_type = getDataType();
-		cout << "Create Linked List" << endl;
-		createLinkedList();
-		cout << "Linked List Made " << endl;
-		//insertion_list.print();
-		//insertion_list.head->data.print();
-		makeAvlTree();
-		avl_tree.write();
-		avl_tree_2.read();
-		//pointSearch();
-		//avl_tree_2.print2D(avl_tree_2.root, 1);
-		//Update();
-		//Range_Search();
-		Delete();
+		Menu();
+	}
+
+	void Menu() {
+		bool while_flag = true;
+		while (true) {
+			int option;
+			system("CLS");
+			cout << "\n1.Point Search\n2.Range Search\n3.Update\n4.Delete\n5.Read from file\n6.Write to file\n7.Make Tree\n8.Print Tree\n9.Destroy Tree\n12.Exit\n";
+			cout << "Enter your choice: ";
+			cin >> option;
+			bool flag = true;
+			if (!avl_tree.root) { flag = false; }
+			switch (option)
+			{
+			case 1 :
+				if (flag) { pointSearch(); }
+				else cout << "No Tree Exists" << endl;
+				break;
+			case 2 : 
+				if (flag) {Range_Search();}
+				else cout << "No Tree Exists" << endl;
+				break;
+			case 3:
+				if (flag){Update();}
+				else cout << "No Tree Exists" << endl;
+
+				break;
+			case 4:
+				if (flag){Delete();}
+				else cout << "No Tree Exists" << endl;
+
+				break;
+			case 5:
+				if (!flag) { Read(); }
+				else cout << "Tree Already Exists" << endl;
+				break;
+			case 6:
+				avl_tree.write();
+				break;
+			case 7:
+				if (!flag){
+					field_type = getFieldType();
+					data_type = getDataType();
+					createLinkedList();
+					makeAvlTree();
+					insertion_list.print();
+				}
+				else cout << "Tree Already Exists" << endl;
+
+				break;
+			case 8 : 
+				if (flag) { avl_tree.print2D(avl_tree.root, 1); }
+				else cout << "No Tree Exists" << endl;
+				break;
+			case 9:
+				if (flag) { Destroy_tree(); }
+				else cout << "No Tree Exists" << endl;
+				break;
+			case 12 :
+				while_flag = false;
+				return;
+			default:
+				break;
+			}
+			system("PAUSE");
+		}
 	}
 
 	void makeAvlTree()
@@ -82,7 +134,6 @@ public:
 	void createLinkedList()
 	{
 		string line, word;
-		SNode<Key<string>> *duplicate = insertion_list.head;
 		bool flag = true;
 		for (int i = 0; i < num_of_files; i++)
 		{
@@ -100,6 +151,7 @@ public:
 						if (word[0] == '"') getCompleteWord(word, str);
 						if (j == field_type){
 							//------------------------
+							SNode<Key<string>>* duplicate = insertion_list.head;
 							while (duplicate != NULL){
 								if (duplicate->data.key_val == word){
 									duplicate->data.update_key(seekgVal, file_name[i]);
@@ -108,8 +160,8 @@ public:
 								}
 								duplicate = duplicate->next;
 							}
-							duplicate = insertion_list.head;
 							//------------------------
+							if (word[0] == '#') { flag = false; }
 							if (flag){
 								Key<string> data(word, seekgVal, file_name[i]);
 								insertion_list.insert(data);
@@ -123,6 +175,17 @@ public:
 			}
 			fin.close();
 		}
+	}
+
+	void fillFieldType() {
+		ifstream fin(file_name[0], ios::in);
+		string line, word;
+		getline(fin, line);
+		stringstream str(line);
+		while (getline(str, word, ',')) {
+			fieldHeadings.insert(word); // filling up the headings linkedList
+		}
+		fin.close();
 	}
 
 	int getFieldType()
@@ -197,35 +260,6 @@ public:
 		str.get();// to skip the comma-
 	}
 
-	//void Print_Key() {
-	//	string line, word;
-	//	SNode<string>* filename = node->data.file_name.head;
-	//	SNode<int>* seekgVal = node->data.line_buffer.head;
-	//	cout << "Following data has been found:\n";
-	//	for (int i = 0; i < (node->data.file_name.numOfItems); i++)
-	//	{
-
-	//		ifstream fin(filename->data);
-	//		fin.seekg(seekgVal->data);	//jumping to the index line
-	//		getline(fin, line);	//reading the line
-	//		stringstream str(line);
-	//		SNode<string>* heading = fieldHeadings.head;
-	//		cout << "===========================\n";
-	//		while (heading)
-	//		{
-	//			getline(str, word, ',');
-	//			if (word[0] == '"') getCompleteWord(word, str);
-	//			cout << heading->data << ": " << word << endl;
-	//			heading = heading->next;
-	//		}
-	//		cout << "===========================\n";
-	//		fin.close();
-	//		filename = filename->next;
-	//		seekgVal = seekgVal->next;
-	//	}
-	//}
-
-//	template<class T>
 	void pointSearch()
 	{
 		string input = "";
@@ -415,20 +449,29 @@ public:
 		SNode<int>* seekgVal = delete_key->data.line_buffer.head;
 		string line, word;
 		while (filename_node != NULL){
+			//---------------READ THE LINE WHERE CHANGES ARE TO BE MADE----------------
+			ifstream fin(filename_node->data);
+			fin.seekg(seekgVal->data);
+			getline(fin, line);
+			fin.close();
+			//----------------FILLING THE DELETED DATA WITH #----------------
 			fstream fout(filename_node->data, ios::in | ios::out);
 			fout.seekp(seekgVal->data);
 			SNode<string>* heading = fieldHeadings.head;
-			getline(fout, line);
 			stringstream str(line);
 			while (heading != NULL)
 			{
 				getline(str, word ,',');
 				if (word[0] == '"') getCompleteWord(word, str);
 				for (int i = 0; i < word.size(); i++){
-					fout << "# ";
+					if (i == 0)
+					{
+						fout << "#";
+					}
+					else fout << '\0';
 				}
-				fout << "# ,";
 				heading = heading->next;
+				if (heading != NULL){fout << ',';}
 			}
 			fout.close();
 			filename_node = filename_node->next;
@@ -443,8 +486,24 @@ public:
 		getline(cin, delete_val);
 		Key<string> delete_key(delete_val);
 		AVL_Node<Key<string>>* delete_node = avl_tree.retrieve(delete_key);
+		if (!delete_node){
+			cout << "No such data found!" << endl;
+			return;
+		}
 		remove(delete_node);
-		//avl_tree.Delete(delete_key, avl_tree.root);
+		avl_tree.Delete(delete_key, avl_tree.root);
+		avl_tree.write();
 	}
 
+	void Read() {
+		fillFieldType();
+		avl_tree.read();
+	}
+
+	void Destroy_tree() {
+
+		insertion_list.destroy_list();
+		fieldHeadings.destroy_list();
+		avl_tree.~AVLTree();
+	}
 };

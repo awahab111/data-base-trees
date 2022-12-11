@@ -6,16 +6,17 @@ public:
 	T data;
 	SNode* next;
 
-	SNode()
-	{
+	SNode(){
 		next = NULL;
 	}
 
 	SNode(T d, SNode* n) : data(0), next(n)
 	{}
 
-	SNode(T d) : data(d), next(nullptr)
-	{}
+	SNode(T d){
+		data = d;
+		next = NULL;
+	}
 
 	void setData(T d)
 	{}
@@ -57,11 +58,36 @@ public:
 	void mergeLists(SLinkedList newList);
 	bool isEmpty()
 	{
-		if (head == nullptr) return true;
+		if (numOfItems == 0) return true;
 		else return false;
 	}
-
-
+	void destroy_list() {
+		SNode<T>* temp = head;
+		if (isEmpty()){return;}
+		while (temp != NULL) {
+			head = temp->next;
+			delete temp;
+			temp = head;
+			numOfItems--;
+		}
+	}
+	/*~SLinkedList() {
+		SNode<T>* temp = head;
+		if (isEmpty()) { return; }
+		while (temp != NULL) {
+			head = temp->next;
+			delete temp;
+			temp = head;
+			numOfItems--;
+		}
+	}*/
+	/*SLinkedList(SLinkedList<T>& a) {
+		SNode<T> *temp = a.head;
+		while (temp!= NULL){
+			insert(temp->data);
+			temp = temp->next;
+		}
+	}*/
 };
 
 
@@ -73,7 +99,7 @@ void SLinkedList<T>::insert(T num)
 	SNode<T>* newNode = new SNode<T>(num);
 	if (head == nullptr)
 	{
-		head = newNode;
+		head = new SNode<T>(num);
 		newNode = nullptr;
 		numOfItems++;
 	}
@@ -84,7 +110,7 @@ void SLinkedList<T>::insert(T num)
 		{
 			temp = temp->next;
 		}
-		temp->next = newNode;
+		temp->next = new SNode<T>(num);
 		temp = nullptr;
 		numOfItems++;
 	}

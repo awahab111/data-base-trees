@@ -14,6 +14,20 @@ public:
 	
 	}
 
+	/*Key(Key& a) {
+		SNode<int>* temp = a.line_buffer.head;
+		SNode<string>* temp_1 = a.file_name.head;
+		key_val = a.key_val;
+		while (temp != NULL) {
+			line_buffer.insert(temp->data);
+			temp = temp->next;
+		}
+		while (temp_1!= NULL) {
+			file_name.insert(temp_1->data);
+			temp_1= temp_1->next;
+		}
+	}*/
+
 	Key(T x)
 	{
 		key_val = x;
@@ -109,8 +123,16 @@ public:
 			fout << name->data << ',';
 			name = name->next;
 		}
-		fout << "#\n";
+		fout << "#";
 	}
+	/*void destroy_key() {
+		line_buffer.destroy_list();
+		file_name.destroy_list();
+	}*/
+	//~Key() {
+	//	/*line_buffer.destroy_list();
+	//	file_name.destroy_list();*/
+	//}
 	friend ostream& operator<<(ostream& out, const Key<string>& k);
 };
 ostream& operator<<(ostream& out, const Key<string>& k) {
