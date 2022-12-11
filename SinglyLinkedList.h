@@ -42,12 +42,9 @@ public:
 	SNode<T>* head;
 	int numOfItems = 0;
 
-
-	SLinkedList()
-	{
+	SLinkedList(){
 		head = NULL;
 	}
-
 	void insert(T num);
 	void insertAtHead(T num);
 	void InsertAtIndex(int i, int j);
@@ -56,38 +53,13 @@ public:
 	void remove(T value);
 	void print();
 	void mergeLists(SLinkedList newList);
+	void destroy_list();
 	bool isEmpty()
 	{
 		if (numOfItems == 0) return true;
 		else return false;
 	}
-	void destroy_list() {
-		SNode<T>* temp = head;
-		if (isEmpty()){return;}
-		while (temp != NULL) {
-			head = temp->next;
-			delete temp;
-			temp = head;
-			numOfItems--;
-		}
-	}
-	/*~SLinkedList() {
-		SNode<T>* temp = head;
-		if (isEmpty()) { return; }
-		while (temp != NULL) {
-			head = temp->next;
-			delete temp;
-			temp = head;
-			numOfItems--;
-		}
-	}*/
-	/*SLinkedList(SLinkedList<T>& a) {
-		SNode<T> *temp = a.head;
-		while (temp!= NULL){
-			insert(temp->data);
-			temp = temp->next;
-		}
-	}*/
+	
 };
 
 
@@ -200,5 +172,16 @@ void SLinkedList<T>::print()
 	{
 		cout << temp->data << " ";
 		temp = temp->next;
+	}
+}
+template <class T>
+void SLinkedList<T>::destroy_list() {
+	SNode<T>* temp = head;
+	if (isEmpty()) { return; }
+	while (temp != NULL) {
+		head = temp->next;
+		delete temp;
+		temp = head;
+		numOfItems--;
 	}
 }

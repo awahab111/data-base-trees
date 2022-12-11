@@ -1,7 +1,6 @@
 #pragma once
 #include "Queue.h"
 #include "Key.h"
-//#include <string>
 #include <fstream>
 #include <sstream>
 using namespace std;
@@ -30,11 +29,11 @@ class AVLTree
 {
 public:
 	AVL_Node<T>* root;
+	int SPACE= 5; // for the print function
 	AVLTree()
 	{
 		root = NULL;
 	}
-
 
 	int Height(AVL_Node<T>* P)
 	{
@@ -61,10 +60,11 @@ public:
 
 	void writeAVLTree(AVL_Node<T>* root, ofstream& out) {
 
-		if (!root) {
+		if (!root) { // if the node is null then write #
 			out << "#\n";
 		}
 		else {
+			// Writing the data to the file using preorder traversal 
 			root->data.fileoperator(out);
 			out << ',' << root->height << '\n';
 			writeAVLTree(root->left, out);
@@ -78,30 +78,32 @@ public:
 		readAVLTree(this->root, f1);
 		f1.close();
 	}
+
 	void readAVLTree(AVL_Node<T>*& root, ifstream& fin) {
 		Key<string> key_val;
 		int key_height;
 		bool isKey;
-		if (!readKey(fin, key_val, isKey, key_height)){
+		if (!readKey(fin, key_val, isKey, key_height)){ // Read from the file
 			return;
 		}
 		if (isKey)
 		{
+			// Using preorder to make the tree again
 			root = new AVL_Node<T> (key_val);
 			root->height = key_height;
 			readAVLTree(root->left, fin);
 			readAVLTree(root->right, fin);
 		}
-		
-		
 	}
 
 	bool readKey(ifstream& fin, Key<string>& data , bool& a, int& height) {
+		// Function to make a tree by reading from a file
 		string line, word;
 		getline(fin, line);
 		stringstream str(line);
+		// --------- Extracting data from the file 
 		if (line[0] == '#') {
-			a = false;
+			a = false; // if data was not found return false
 			return false;
 		}
 		getline(str, word, ',');
@@ -118,18 +120,12 @@ public:
 		}
 		getline(str, word, ',');
 		height = stoi(word);
-		a = true;
+		//------------------------------
+		a = true; // if data was found then return true
 		return true;
 	}
 
-
-
 	void Insert(T val) {
-		/*if (data_type == 0)
-		{
-			float temp = stof(val);
-			Insert_(temp, root);
-		}*/
 		Insert_(val, root);
 	}
 
@@ -156,7 +152,6 @@ public:
 		return root;
 	}
 
-
 	AVL_Node<T>* LRotation(AVL_Node<T>* node) {
 		AVL_Node<T>* temp;
 		temp = node->right;
@@ -166,7 +161,6 @@ public:
 		temp->height = Max(Height(temp->right), node->height) + 1;
 		return temp;
 	}
-
 
 	AVL_Node<T>* RRotation(AVL_Node<T>* node) {
 		AVL_Node<T>* temp;
@@ -204,8 +198,8 @@ public:
 			AVL_Node<T>* temp = root;
 			while (temp)
 			{
-				if (temp->data == node) return temp;
-				if (node > temp->data)
+				if (temp->data == node) return temp; // Val was found 
+				if (node > temp->data) 
 					temp = temp->right;
 				else if (node < temp->data)
 					temp = temp->left;
@@ -247,43 +241,24 @@ public:
 
 	}
 
-	~AVLTree() {
-		delete_tree(root);
-		root = NULL;
-	}
-
 	void delete_tree(AVL_Node<T>* node) {
-		if (node == NULL) {return;}
+		if (node == NULL) {return;} // Using Post Order to delete the tree
 		delete_tree(node->left);
 		delete_tree(node->right);
 		delete node;
 	}
 
 	void RangeSearch(AVL_Node<T>* root, T lower_lim, T upper_lim, SLinkedList<T>& result) {
-		if (root == NULL) { return; }
-		if (lower_lim < root->data){
-			RangeSearch(root->left, lower_lim, upper_lim, result);
+		if (root == NULL) { return; } // Base Case
+		if (lower_lim < root->data){ 
+			RangeSearch(root->left, lower_lim, upper_lim, result); // Moving to the left subtree if data is greater than the lower limit
 		}
 		if ((root->data < upper_lim || root->data == upper_lim) && (root->data > lower_lim || root->data == lower_lim)) {
-			result.insert(root->data);
+			result.insert(root->data); // insert the data into the linked list if data is within the lower and upper lim
 		}
-		RangeSearch(root->right, lower_lim, upper_lim, result);
+		RangeSearch(root->right, lower_lim, upper_lim, result); // else data is smaller than the lower lim and move to the right subtree
 	}
 
-	/*void LevelOrder(AVL_Node<T>* root)
-	{
-		if (root == nullptr)return;
-		Queue<AVL_Node<T>> queue;
-		queue.enqueue(*root);
-		while (queue.num_items < 1)
-		{
-			AVL_Node<T> temp = queue.dequeue();
-			cout << temp.data << " ";
-
-			if (temp.left != nullptr) queue.enqueue(*temp.left);
-			if (temp.right != nullptr) queue.enqueue(*temp.right);
-		}
-	}*/
 	void LevelOrder(AVL_Node<T>* ptr) {
 		if (root == NULL) { return; }
 		Queue <AVL_Node<T>*> q1;
@@ -314,7 +289,6 @@ public:
 
 		}
 	}
-
 
 	T getMin(AVL_Node<T>* root)
 	{
@@ -390,19 +364,19 @@ public:
 		return node;
 	}
 
-	// Copied plz change this
-	int SPACE = 5;
+	// This uses Inorder traversal to print a tree vertically
 	void print2D(AVL_Node<T>* r, int space) {
-		if (r == NULL) // Base case  1
+		if (r == NULL) // base case
 			return;
-		space += SPACE; // Increase distance between levels   2
-		print2D(r->right, space); // Process right child first 3 
+		space += SPACE; // Increase distance between levels
+		print2D(r->right, space); // printing right child first
 		cout << endl;
-		for (int i = SPACE; i < space; i++) // 5 
-			cout << " "; // 5.1  
-		cout << r->data << "\n"; // 6
-		print2D(r->left, space); // Process left child  7
+		for (int i = SPACE; i < space; i++) 
+			cout << " ";  // Printing space between to nodes needs to increase as it gets closer to the root
+		cout << r->data << "\n";
+		print2D(r->left, space);
 	}
+
 	AVL_Node<T>* Search(T d) {
 		AVL_Node<T>* node = root;
 		while (node != NULL)
@@ -424,36 +398,8 @@ public:
 		return node;
 	}
 
-	//void Delete(int k, AVL_Node<T>*& root)
-	//{
-	//	if (!root) return;
-	//	else if (k == root-> data)
-	//	{
-	//		
-	//		 if (!root->left)//left is null
-	//		{
-	//			AVL_Node<T>* temp = root->right;
-	//			delete root;
-	//			root = temp;
-	//		}
-	//		else if (!root->right)//right is null
-	//		{
-	//			AVL_Node<T>* temp = root->left;
-	//			delete root;
-	//			root = temp;
-	//		}
-	//		else
-	//		{
-	//			AVL_Node<T>* temp = root->right;
-	//			int min = getMin(temp);
-	//			root->data = min;
-	//			Delete(min, temp);
-	//		}
-	//	}
-	//	else if (k < root->data)
-	//		Delete(k, root->left);
-	//	else if (k > root->data)
-	//		Delete(k, root->right);
-	//}
-
+	~AVLTree() {
+		delete_tree(root);
+		root = NULL;
+	}
 };
