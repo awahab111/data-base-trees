@@ -364,8 +364,8 @@ public:
 		return node;
 	}
 
-	// This uses Inorder traversal to print a tree vertically
 	void print2D(AVL_Node<T>* r, int space) {
+		// This uses Inorder traversal to print a tree vertically
 		if (r == NULL) // base case
 			return;
 		space += SPACE; // Increase distance between levels

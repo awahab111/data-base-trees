@@ -10,26 +10,9 @@ public:
 	SLinkedList<int> line_buffer;
 	SLinkedList<string> file_name;
 
-	Key(){
-	
-	}
+	Key(){}
 
-	/*Key(Key& a) {
-		SNode<int>* temp = a.line_buffer.head;
-		SNode<string>* temp_1 = a.file_name.head;
-		key_val = a.key_val;
-		while (temp != NULL) {
-			line_buffer.insert(temp->data);
-			temp = temp->next;
-		}
-		while (temp_1!= NULL) {
-			file_name.insert(temp_1->data);
-			temp_1= temp_1->next;
-		}
-	}*/
-
-	Key(T x)
-	{
+	Key(T x){
 		key_val = x;
 	}
 
@@ -39,10 +22,12 @@ public:
 		line_buffer.insert(seekgVal);
 		file_name.insert(f);
 	}
+
 	void update_key(int seekgVal, string f) {
 		line_buffer.insert(seekgVal);
 		file_name.insert(f);
 	}
+
 	void print(SLinkedList<string>& fieldHeadings) {
 		SNode<int>* seekgVal = line_buffer.head;
 		SNode<string>* filename = file_name.head;
@@ -96,6 +81,7 @@ public:
 		if (key_val < val.key_val) { return true; }
 		else return false;
 	}
+
 	bool operator>(Key val) {
 		if (!check_datatype(key_val)) { // If the string is float then we need to convert string to a float and then compare 
 			float t1 = stof(key_val);
@@ -106,10 +92,12 @@ public:
 		if (key_val > val.key_val) { return true; }
 		else return false;
 	}
+
 	bool operator==(Key val) {
 		if (key_val == val.key_val) { return true; }
 		else return false;
 	}
+
 	void fileoperator(ostream & fout) {
 		SNode<int> *line = line_buffer.head;
 		SNode<string>* name = file_name.head;
@@ -125,23 +113,11 @@ public:
 		}
 		fout << "#";
 	}
-	/*void destroy_key() {
-		line_buffer.destroy_list();
-		file_name.destroy_list();
-	}*/
-	//~Key() {
-	//	/*line_buffer.destroy_list();
-	//	file_name.destroy_list();*/
-	//}
+
 	friend ostream& operator<<(ostream& out, const Key<string>& k);
 };
 ostream& operator<<(ostream& out, const Key<string>& k) {
 	SNode<int>* line = k.line_buffer.head;
 	out << k.key_val << " ";
-	/*while (line != NULL){
-		out << line->data << " ";
-		line = line->next;
-	}*/
-	//out << endl;
 	return out;
 }

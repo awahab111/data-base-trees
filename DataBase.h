@@ -7,7 +7,6 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-
 using namespace std;
 class Database {
 public:
@@ -16,7 +15,7 @@ public:
 	string *file_name;
 	int num_of_files;
 	SLinkedList<Key<string>> insertion_list;
-	AVLTree<Key<string>> avl_tree, avl_tree_2;
+	AVLTree<Key<string>> avl_tree;
 	SLinkedList<string> fieldHeadings;
 
 	Database() {}
@@ -25,7 +24,6 @@ public:
 		num_of_files = files_count;
 		file_name = new string[num_of_files];
 		for (int i = 0; i < num_of_files; i++) { file_name[i] = f1[i]; }
-		Menu();
 	}
 
 	void Menu() {
