@@ -66,6 +66,7 @@ public:
 		}
 		else {
 			root->data.fileoperator(out);
+			out << ',' << root->height << '\n';
 			writeAVLTree(root->left, out);
 			writeAVLTree(root->right, out);
 		}
@@ -79,13 +80,15 @@ public:
 	}
 	void readAVLTree(AVL_Node<T>*& root, ifstream& fin) {
 		Key<string> key_val;
+		int key_height;
 		bool isKey;
-		if (!readKey(fin, key_val, isKey)){
+		if (!readKey(fin, key_val, isKey, key_height)){
 			return;
 		}
 		if (isKey)
 		{
 			root = new AVL_Node<T> (key_val);
+			root->height = key_height;
 			readAVLTree(root->left, fin);
 			readAVLTree(root->right, fin);
 		}
@@ -93,7 +96,7 @@ public:
 		
 	}
 
-	bool readKey(ifstream& fin, Key<string>& data , bool& a) {
+	bool readKey(ifstream& fin, Key<string>& data , bool& a, int& height) {
 		string line, word;
 		getline(fin, line);
 		stringstream str(line);
@@ -113,6 +116,8 @@ public:
 			data.file_name.insert(word);
 			getline(str, word, ',');
 		}
+		getline(str, word, ',');
+		height = stoi(word);
 		a = true;
 		return true;
 	}
@@ -242,6 +247,29 @@ public:
 
 	}
 
+	~AVLTree() {
+		delete_tree(root);
+		root = NULL;
+	}
+
+	void delete_tree(AVL_Node<T>* node) {
+		if (node == NULL) {return;}
+		delete_tree(node->left);
+		delete_tree(node->right);
+		delete node;
+	}
+
+	void RangeSearch(AVL_Node<T>* root, T lower_lim, T upper_lim, SLinkedList<T>& result) {
+		if (root == NULL) { return; }
+		if (lower_lim < root->data){
+			RangeSearch(root->left, lower_lim, upper_lim, result);
+		}
+		if ((root->data < upper_lim || root->data == upper_lim) && (root->data > lower_lim || root->data == lower_lim)) {
+			result.insert(root->data);
+		}
+		RangeSearch(root->right, lower_lim, upper_lim, result);
+	}
+
 	/*void LevelOrder(AVL_Node<T>* root)
 	{
 		if (root == nullptr)return;
@@ -288,7 +316,7 @@ public:
 	}
 
 
-	int getMin(AVL_Node<T>* root)
+	T getMin(AVL_Node<T>* root)
 	{
 		AVL_Node<T>* temp = root;
 
@@ -318,7 +346,7 @@ public:
 			Height(N->right);
 	}
 
-	AVL_Node<T>* Delete(int val, AVL_Node<T>* node) {
+	AVL_Node<T>* Delete(T val, AVL_Node<T>* node) {
 		AVL_Node<T>* temp;
 		if (!node) return node;
 		else if (val == node->data) {
@@ -334,7 +362,7 @@ public:
 			}
 			else {
 				temp = node->right;
-				int min = getMin(temp);
+				T min = getMin(temp);
 				node->data = min;
 				node->right = Delete(min, temp);
 			}
