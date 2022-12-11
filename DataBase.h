@@ -447,7 +447,7 @@ public:
 				updateLine.insert(word);
 			}
 			
-			if(newVal > oldVal) //---- special case
+			if(newVal.size() > oldVal.size()) //---- special case
 			while(getline(fin, tempLine))
 			{
 				remainingLines.insert(tempLine);
@@ -480,7 +480,7 @@ public:
 				traverser = traverser->next;
 			}
 			//------- special case
-			if (newVal > oldVal)
+			if (newVal.size() > oldVal.size())
 			{
 				fout << '\n';
 				traverser = remainingLines.head;
@@ -488,7 +488,7 @@ public:
 				{
 					fout << traverser->data << '\n';
 					traverser = traverser->next;
-					
+
 				}
 			}
 			//-----------
